@@ -36,7 +36,7 @@ def normal_normal(t_data):
             shape=(2,),
         )
 
-        pm.Mixture("likelihood", w=w, comp_dists=components, observed=data)
+        pm.Mixture("obs", w=w, comp_dists=components, observed=data)
 
     return model
 
@@ -71,7 +71,7 @@ def normal_lognormal(t_data):
 
         components = [norm, lognorm]
 
-        pm.Mixture("likelihood", w=w, comp_dists=components, observed=data)
+        pm.Mixture("obs", w=w, comp_dists=components, observed=data)
 
     return model
 
@@ -105,6 +105,6 @@ def lognormal_lognormal(t_data):
 
         components = [lognorm1, lognorm2]
 
-        pm.Mixture("likelihood", w=w, comp_dists=components, observed=data)
+        pm.Mixture("obs", w=w, comp_dists=components, observed=data)
 
     return model

@@ -176,8 +176,6 @@ def fit_pe_dist(t_data):
         The input data.
     """
 
-    log = logging.getLogger("fitpdf.fit_pdf")
-
     data = t_data.copy()
 
     model = fmodels.normal_lognormal(data)
@@ -185,11 +183,43 @@ def fit_pe_dist(t_data):
     with model:
         idata = pm.sample(draws=2000, chains=4)
 
-    az.summary(idata)
+    print(az.summary(idata))
 
     az.plot_trace(idata)
 
-    corner.corner(idata)
+    corner.corner(idata, plot_datapoints=False)
+
+    # posterior predictive
+    thinned_idata = idata.sel(draw=slice(None, None, 20))
+
+    with model:
+        pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
+
+    figsize = (6.4, 4.8)
+    ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
+
+    ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
+    ax.set_ylabel("PDF")
+    ax.set_yscale("log")
+
+    fig = plt.gcf()
+    fig.tight_layout()
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    ax.hist(
+        pp.posterior_predictive["obs"].mean(("chain", "draw")),
+        color="black",
+        bins=50,
+        density=True,
+        histtype="step",
+        linewidth=2,
+    )
+
+    ax.set_yscale("log")
+
+    fig.tight_layout()
 
 
 def plot_pe_dist(dfs, params):
@@ -258,7 +288,7 @@ def plot_pe_dist(dfs, params):
             color = f"C{i - 1}"
 
         # fit data
-        fitresult = fit_pe_dist(data / params["mean"])
+        fit_pe_dist(data / params["mean"])
 
         # on-pulse
         _density, _, _ = ax.hist(
