@@ -57,17 +57,15 @@ def normal_lognormal(t_data):
         # mixture weights
         w = pm.Dirichlet("w", a=np.array([1, 1]))
 
-        # 1) normal distribution for nulling
-        mu1 = pm.Normal("mu1", mu=0, sigma=1)
-        sigma1 = pm.HalfNormal("sigma1", sigma=1)
+        # priors
+        mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1)
+        sigma = pm.HalfNormal("sigma", sigma=np.array([1, 1]))
 
-        norm = pm.Normal.dist(mu=mu1, sigma=sigma1)
+        # 1) normal distribution for nulling
+        norm = pm.Normal.dist(mu=mu[0], sigma=sigma[0])
 
         # 2) lognormal distribution for pulses
-        mu2 = pm.Normal("mu2", mu=1, sigma=1)
-        sigma2 = pm.HalfNormal("sigma2", sigma=1)
-
-        lognorm = pm.Lognormal.dist(mu=mu2, sigma=sigma2)
+        lognorm = pm.Lognormal.dist(mu=mu[1], sigma=sigma[1])
 
         components = [norm, lognorm]
 
@@ -92,16 +90,15 @@ def lognormal_lognormal(t_data):
         # mixture weights
         w = pm.Dirichlet("w", a=np.array([1, 1]))
 
-        # 1) lognormal distribution
-        mu1 = pm.Normal("mu1", mu=0, sigma=1)
-        sigma1 = pm.HalfNormal("sigma1", sigma=1)
+        # priors
+        mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1)
+        sigma = pm.HalfNormal("sigma", sigma=np.array([1, 1]))
 
-        lognorm1 = pm.Lognormal.dist(mu=mu1, sigma=sigma1)
+        # 1) lognormal distribution
+        lognorm1 = pm.Lognormal.dist(mu=mu[0], sigma=sigma[0])
 
         # 2) lognormal distribution
-        mu2 = pm.Normal("mu2", mu=1, sigma=1)
-        sigma2 = pm.HalfNormal("sigma2", sigma=1)
-        lognorm2 = pm.Lognormal.dist(mu=mu2, sigma=sigma2)
+        lognorm2 = pm.Lognormal.dist(mu=mu[1], sigma=sigma[1])
 
         components = [lognorm1, lognorm2]
 
