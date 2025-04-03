@@ -33,6 +33,11 @@ setup(
     license="MIT",
     packages=find_packages(),
     install_requires=["matplotlib", "numpy", "pandas", "pymc"],
+    entry_points={
+        "console_scripts": [
+            "fitpdf-fit = fitpdf.apps.fit_pdf:main",
+        ],
+    },
     classifiers=[
         "Development Status :: 5 - Production/Stable",
         "License :: OSI Approved :: MIT License",
