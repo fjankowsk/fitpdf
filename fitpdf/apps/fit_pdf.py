@@ -166,7 +166,7 @@ def check_args(args):
             sys.exit(1)
 
 
-def fit_pe_dist(t_data):
+def fit_pe_dist(t_data, params):
     """
     Fit pulse-energy distribution.
 
@@ -174,6 +174,8 @@ def fit_pe_dist(t_data):
     ----------
     t_data: ~np.array
         The input data.
+    params: dict
+        Additional parameters that influence the processing.
     """
 
     data = t_data.copy()
@@ -195,20 +197,10 @@ def fit_pe_dist(t_data):
     with model:
         pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
 
-    figsize = (6.4, 4.8)
-    ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
-
-    ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
-    ax.set_ylabel("PDF")
-    ax.set_yscale("log")
-
-    fig = plt.gcf()
-    fig.tight_layout()
-
     fig = plt.figure()
     ax = fig.add_subplot()
 
-    ax.hist(
+    _density, _, _ = ax.hist(
         pp.posterior_predictive["obs"].mean(("chain", "draw")),
         color="black",
         bins=50,
@@ -217,9 +209,35 @@ def fit_pe_dist(t_data):
         linewidth=2,
     )
 
+    _mask = np.isfinite(_density) & (_density > 0)
+    min_density = np.min(_density[_mask])
+
     ax.set_yscale("log")
 
     fig.tight_layout()
+
+    figsize = (6.4, 4.8)
+    ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
+
+    ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
+    ax.set_ylabel("PDF")
+    ax.set_yscale("log")
+
+    # set ylim to the density corresponding to one bin count
+    # ax.set_ylim(bottom=0.7 * min_density)
+
+    fig = plt.gcf()
+    fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "pedist_fit.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)
 
 
 def plot_pe_dist(dfs, params):
@@ -288,7 +306,7 @@ def plot_pe_dist(dfs, params):
             color = f"C{i - 1}"
 
         # fit data
-        fit_pe_dist(data / params["mean"])
+        fit_pe_dist(data / params["mean"], params)
 
         # on-pulse
         _density, _, _ = ax.hist(
