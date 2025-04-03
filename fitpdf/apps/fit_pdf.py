@@ -4,6 +4,9 @@ import os
 import signal
 import sys
 
+import arviz as az
+import corner
+
 # switch between interactive and non-interactive mode
 import matplotlib
 
@@ -14,12 +17,14 @@ import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import numpy as np
 import pandas as pd
+import pymc as pm
 
 from spanalysis.general_helpers import (
     configure_logging,
     customise_matplotlib_format,
     signal_handler,
 )
+import fitpdf.models as fmodels
 
 
 def parse_args():
@@ -161,6 +166,32 @@ def check_args(args):
             sys.exit(1)
 
 
+def fit_pe_dist(t_data):
+    """
+    Fit pulse-energy distribution.
+
+    Parameters
+    ----------
+    t_data: ~np.array
+        The input data.
+    """
+
+    log = logging.getLogger("fitpdf.fit_pdf")
+
+    data = t_data.copy()
+
+    model = fmodels.normal_lognormal(data)
+
+    with model:
+        idata = pm.sample(draws=2000, chains=4)
+
+    az.summary(idata)
+
+    az.plot_trace(idata)
+
+    corner.corner(idata)
+
+
 def plot_pe_dist(dfs, params):
     """
     Plot pulse-energy distributions.
@@ -173,9 +204,8 @@ def plot_pe_dist(dfs, params):
         Additional parameters that influence the plotting.
     """
 
-    log = logging.getLogger("spanalysis.plot_dist")
+    log = logging.getLogger("fitpdf.fit_pdf")
 
-    # pdf
     fig = plt.figure()
     ax = fig.add_subplot()
 
@@ -226,6 +256,9 @@ def plot_pe_dist(dfs, params):
             color = "black"
         else:
             color = f"C{i - 1}"
+
+        # fit data
+        fitresult = fit_pe_dist(data / params["mean"])
 
         # on-pulse
         _density, _, _ = ax.hist(
@@ -358,6 +391,8 @@ def main():
         df = pd.read_csv(item)
         df["filename"] = item
         dfs.append(df)
+
+    plot_pe_dist(dfs, params)
 
     plt.show()
 

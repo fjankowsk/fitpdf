@@ -14,7 +14,7 @@ help:
 	@echo 'make uninstall       uninstall the package'
 
 black:
-	${BLK} *.py */*.py
+	${BLK} *.py */*.py */*/*.py
 
 clean:
 	rm -f ${SRCDIR}/*.pyc
