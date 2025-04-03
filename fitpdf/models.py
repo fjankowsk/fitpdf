@@ -89,20 +89,22 @@ def lognormal_lognormal(t_data):
     data = t_data.copy()
 
     with pm.Model() as model:
-        mu1 = pm.Normal("mu1", mu=0, sigma=1, testval=0)
-
-        sigma1 = pm.HalfNormal("sigma1", sigma=1, testval=1)
-        sigma2 = pm.HalfNormal("sigma2", sigma=1, testval=1)
-
-        # 1) normal distribution for nulling
-        # 2) lognormal distribution for pulses, fixed at zero, only shape is fit
-        norm1 = pm.Normal.dist(mu=mu1, sigma=sigma1)
-        lognorm2 = pm.Lognormal.dist(mu=0, sigma=sigma2)
-
-        # weights
+        # mixture weights
         w = pm.Dirichlet("w", a=np.array([1, 1]))
 
-        # the total likelihood
-        pm.Mixture("obs", w=w, comp_dists=[norm1, lognorm2], observed=data)
+        # 1) lognormal distribution
+        mu1 = pm.Normal("mu1", mu=0, sigma=1)
+        sigma1 = pm.HalfNormal("sigma1", sigma=1)
+
+        lognorm1 = pm.Lognormal.dist(mu=mu1, sigma=sigma1)
+
+        # 2) lognormal distribution
+        mu2 = pm.Normal("mu2", mu=1, sigma=1)
+        sigma2 = pm.HalfNormal("sigma2", sigma=1)
+        lognorm2 = pm.Lognormal.dist(mu=mu2, sigma=sigma2)
+
+        components = [lognorm1, lognorm2]
+
+        pm.Mixture("likelihood", w=w, comp_dists=components, observed=data)
 
     return model
