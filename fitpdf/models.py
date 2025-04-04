@@ -22,17 +22,16 @@ def normal_normal(t_data):
         # mixture weights
         w = pm.Dirichlet("w", a=np.array([1, 1]))
 
-        # 1) normal distribution for nulling
-        mu1 = pm.Normal("mu1", mu=0, sigma=1)
-        sigma1 = pm.HalfNormal("sigma1", sigma=1)
+        # priors
+        mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1)
+        sigma = pm.HalfNormal("sigma", sigma=np.array([1, 1]))
 
+        # 1) normal distribution for nulling
         # 2) normal distribution for pulses
-        mu2 = pm.Normal("mu2", mu=1, sigma=1)
-        sigma2 = pm.HalfNormal("sigma2", sigma=1)
 
         components = pm.Normal.dist(
-            mu=pm.math.stack([mu1, mu2]),
-            sigma=pm.math.stack([sigma1, sigma2]),
+            mu=mu,
+            sigma=sigma,
             shape=(2,),
         )
 
