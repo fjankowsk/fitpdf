@@ -201,7 +201,7 @@ def fit_pe_dist(t_data, params):
     ax = fig.add_subplot()
 
     _density, _, _ = ax.hist(
-        pp.posterior_predictive["obs"].mean(("chain", "draw")),
+        pp.posterior_predictive["obs"].values.reshape(-1),
         color="black",
         bins=50,
         density=True,
