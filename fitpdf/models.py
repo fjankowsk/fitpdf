@@ -4,6 +4,7 @@
 
 import numpy as np
 import pymc as pm
+from scipy import stats
 
 
 def normal_normal(t_data):
@@ -71,6 +72,15 @@ def normal_lognormal(t_data):
         pm.Mixture("obs", w=w, comp_dists=components, observed=data)
 
     return model
+
+
+def normal_lognormal_analytic(x, w, mu, sigma):
+    norm = stats.norm.pdf(x, loc=mu[0], scale=sigma[0])
+    lognorm = stats.lognorm.pdf(x, s=sigma[1], loc=mu[1])
+
+    pdf = w[0] * norm + w[1] * lognorm
+
+    return pdf
 
 
 def lognormal_lognormal(t_data):

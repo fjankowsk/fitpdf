@@ -219,28 +219,22 @@ def fit_pe_dist(t_data, params):
     figsize = (6.4, 4.8)
     ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
 
+    mean_params = idata.posterior.mean(("chain", "draw"))
+
     # plot the individual components
+    plot_range = np.linspace(data.min(), data.max(), num=500)
+
     for i in range(2):
-        fact = np.zeros(2)
-        fact[i] = 1.0
+        new_w = np.zeros(2)
+        new_w[i] = mean_params["w"][i].values
 
-        fixed_params = {
-            "w": fact,
-        }
-
-        with pm.do(model, fixed_params):
-            _pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
-
-        ax.hist(
-            _pp.posterior_predictive["obs"].values.reshape(-1),
-            bins=50,
-            density=True,
-            histtype="step",
-            linewidth=1,
-            zorder=3,
-            alpha=0.5,
+        analytic = fmodels.normal_lognormal_analytic(
+            plot_range, new_w, mean_params["mu"].values, mean_params["sigma"].values
         )
 
+        ax.plot(plot_range, analytic, label=f"c{i}")
+
+    ax.legend(loc="best")
     ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
     ax.set_ylabel("PDF")
     ax.set_yscale("log")
