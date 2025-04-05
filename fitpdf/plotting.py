@@ -24,7 +24,7 @@ def plot_corner(idata, params):
     posterior = az.extract(idata.posterior)
     llike = az.extract(idata.log_likelihood)
 
-    max_likelihood_idx = llike.sum("obs_dim_0").argmax()
+    max_likelihood_idx = llike.sum("obs_id").argmax()
     max_likelihood_idx = max_likelihood_idx["obs"].values
     max_likelihood_values = posterior.isel(sample=max_likelihood_idx)
 
