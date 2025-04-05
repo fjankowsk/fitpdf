@@ -184,11 +184,12 @@ def fit_pe_dist(t_data, params):
 
     with model:
         idata = pm.sample(draws=2000, chains=4)
+        pm.compute_log_likelihood(idata)
 
     print(az.summary(idata))
 
     az.plot_trace(idata)
-    plot_corner(idata)
+    plot_corner(idata, params)
 
     # posterior predictive
     thinned_idata = idata.sel(draw=slice(None, None, 20))
@@ -212,7 +213,7 @@ def fit_pe_dist(t_data, params):
 
     fig.tight_layout()
 
-    plot_fit(data, idata, pp, params)
+    plot_fit(idata, pp, params)
 
 
 def plot_pe_dist(dfs, params):
@@ -404,6 +405,7 @@ def main():
         "mean_thresh": args.mean_thresh,
         "nbin": args.nbin,
         "output": args.output,
+        "publish": False,
         "title": args.title,
     }
 

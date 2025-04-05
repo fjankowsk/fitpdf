@@ -4,21 +4,63 @@
 
 import arviz as az
 import corner
+import matplotlib
 import matplotlib.pyplot as plt
 import numpy as np
 
 import fitpdf.models as fmodels
 
 
-def plot_corner(idata):
+def plot_corner(idata, params):
     """
     Make a corner plot.
     """
 
-    corner.corner(idata, plot_datapoints=False)
+    # get maximum likelihood values
+    posterior = az.extract(idata.posterior)
+    llike = az.extract(idata.log_likelihood)
+
+    max_likelihood_idx = llike.sum("obs_dim_0").argmax()
+    max_likelihood_idx = max_likelihood_idx["obs"].values
+    max_likelihood_values = posterior.isel(sample=max_likelihood_idx)
+
+    # defaults
+    bins = 40
+    fontsize_before = matplotlib.rcParams["font.size"]
+    hist_kwargs = None
+    labelpad = 0.125
+    max_n_ticks = 5
+    plot_datapoints = False
+    show_titles = True
+    smooth = False
+
+    if params["publish"]:
+        hist_kwargs = {"lw": 2.0}
+        labelpad = 0.475
+        max_n_ticks = 2
+        matplotlib.rcParams["font.size"] = 34.0
+        show_titles = False
+        smooth = True
+
+    corner.corner(
+        idata,
+        bins=bins,
+        hist_kwargs=hist_kwargs,
+        labelpad=labelpad,
+        max_n_ticks=max_n_ticks,
+        truths=max_likelihood_values,
+        plot_datapoints=plot_datapoints,
+        quantiles=[0.16, 0.5, 0.84],
+        show_titles=show_titles,
+        smooth=smooth,
+        title_kwargs={"fontsize": 10},
+    )
+
+    # reset
+    matplotlib.rcParams["font.size"] = fontsize_before
 
 
-def plot_fit(data, idata, pp, params):
+def plot_fit(idata, pp, params):
     """
     Plot the distribution fit.
     """
@@ -26,10 +68,14 @@ def plot_fit(data, idata, pp, params):
     figsize = (6.4, 4.8)
     ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
 
-    mean_params = idata.posterior.mean(("chain", "draw"))
-
     # plot the individual components
-    plot_range = np.linspace(data.min(), data.max(), num=500)
+    mean_params = idata.posterior.mean(("chain", "draw"))
+    obs_data = idata.observed_data["obs"].values
+    plot_range = np.linspace(
+        obs_data.min(),
+        obs_data.max(),
+        num=500,
+    )
 
     for i in range(2):
         new_w = np.zeros(2)
