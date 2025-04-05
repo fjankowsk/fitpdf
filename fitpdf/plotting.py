@@ -12,6 +12,7 @@ from KDEpy import FFTKDE, TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
 
 import fitpdf.models as fmodels
+from fitpdf.stats import get_adaptive_bandwidth
 
 
 def plot_corner(idata, params):
@@ -88,13 +89,10 @@ def plot_fit(idata, pp, params):
 
     # kernel density estimate
     # use adaptive bandwidth
-    isj_bws = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
-    print(f"ISJ kernel bandwidth: {isj_bws:.5f}")
+    isj_bw = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
+    print(f"ISJ kernel bandwidth: {isj_bw:.5f}")
 
-    bandwidths = np.zeros(len(obs_data))
-    bandwidths[:-1] = np.diff(obs_data)
-    bandwidths[-1] = bandwidths[-2]
-    bandwidths = np.clip(bandwidths, a_min=0.1, a_max=None)
+    bandwidths = get_adaptive_bandwidth(obs_data, min_bw=5.0 * isj_bw)
     print(bandwidths)
 
     kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
