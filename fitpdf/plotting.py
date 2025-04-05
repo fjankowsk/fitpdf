@@ -73,12 +73,16 @@ def plot_fit(idata, pp, params):
     ax = fig.add_subplot()
 
     # plot the observed data
-    # kernel density estimate
-    kde_x_data, kde_y_data = (
-        FFTKDE(kernel="gaussian", bw="ISJ").fit(obs_data).evaluate()
+    _density_data, _, _ = ax.hist(
+        obs_data,
+        bins=params["nbin"],
+        color="black",
+        density=True,
+        histtype="step",
+        linewidth=2,
+        label="data",
+        zorder=4,
     )
-
-    ax.plot(kde_x_data, kde_y_data, color="black", lw=2, label="data", zorder=4)
 
     # rug plot
     # use data coordinates in horizontal and axis coordinates in vertical direction
@@ -133,11 +137,21 @@ def plot_fit(idata, pp, params):
 
         ax.plot(plot_range, analytic, label=f"c{i}", zorder=6)
 
-    ax.legend(loc="best")
+    ax.legend(loc="best", frameon=False)
+    if params["title"] is not None:
+        ax.set_title(params["title"])
     ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
     ax.set_ylabel("PDF")
     ax.set_yscale("log")
-    ax.set_ylim(bottom=1.0e-6, top=10.0)
+
+    ax.set_xlim(left=1.25 * obs_data.min(), right=1.05 * obs_data.max())
+
+    # set the limits to a bin count of unity
+    _mask = np.isfinite(_density_data) & (_density_data > 0)
+    min_density = np.min(_density_data[_mask])
+    max_density = np.max(_density_data[_mask])
+
+    ax.set_ylim(bottom=0.7 * min_density, top=2.0 * max_density)
 
     fig.tight_layout()
 
