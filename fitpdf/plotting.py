@@ -18,7 +18,7 @@ def plot_corner(idata):
     corner.corner(idata, plot_datapoints=False)
 
 
-def plot_fit(data, idata, params):
+def plot_fit(data, idata, pp, params):
     """
     Plot the distribution fit.
     """

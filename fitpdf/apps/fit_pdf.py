@@ -188,7 +188,6 @@ def fit_pe_dist(t_data, params):
     print(az.summary(idata))
 
     az.plot_trace(idata)
-
     plot_corner(idata)
 
     # posterior predictive
@@ -213,7 +212,7 @@ def fit_pe_dist(t_data, params):
 
     fig.tight_layout()
 
-    plot_fit(data, idata, params)
+    plot_fit(data, idata, pp, params)
 
 
 def plot_pe_dist(dfs, params):
