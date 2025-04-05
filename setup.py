@@ -32,7 +32,7 @@ setup(
     url="https://github.com/fjankowsk/fitpdf",
     license="MIT",
     packages=find_packages(),
-    install_requires=["matplotlib", "numpy", "pandas", "pymc"],
+    install_requires=["KDEpy", "matplotlib", "numpy", "pandas", "pymc"],
     entry_points={
         "console_scripts": [
             "fitpdf-fit = fitpdf.apps.fit_pdf:main",

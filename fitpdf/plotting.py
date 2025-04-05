@@ -6,7 +6,9 @@ import arviz as az
 import corner
 import matplotlib
 import matplotlib.pyplot as plt
+import matplotlib.transforms as transforms
 import numpy as np
+from KDEpy import FFTKDE
 
 import fitpdf.models as fmodels
 
@@ -65,12 +67,56 @@ def plot_fit(idata, pp, params):
     Plot the distribution fit.
     """
 
-    figsize = (6.4, 4.8)
-    ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
-
-    # plot the individual components
-    mean_params = idata.posterior.mean(("chain", "draw"))
     obs_data = idata.observed_data["obs"].values
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    # plot the observed data
+    # kernel density estimate
+    kde_x_data, kde_y_data = (
+        FFTKDE(kernel="gaussian", bw="ISJ").fit(obs_data).evaluate()
+    )
+
+    ax.plot(kde_x_data, kde_y_data, color="black", lw=2, label="data", zorder=4)
+
+    # rug plot
+    # use data coordinates in horizontal and axis coordinates in vertical direction
+    trans = transforms.blended_transform_factory(ax.transData, ax.transAxes)
+    ax.scatter(
+        obs_data,
+        [0.99 for _ in range(len(obs_data))],
+        marker="|",
+        color="black",
+        lw=0.8,
+        transform=trans,
+        alpha=0.3,
+    )
+
+    # plot the mean model
+    samples = pp.posterior_predictive["obs"].values.reshape(-1)
+    kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
+
+    ax.plot(kde_x, kde_y, color="firebrick", lw=1.5, label="model", zorder=5)
+
+    # plot the individual pp draws
+    _ndraw = 50
+    rng = np.random.default_rng()
+    idxs_chain = rng.integers(
+        low=0, high=len(pp.posterior_predictive["chain"]), size=_ndraw
+    )
+    idxs_draw = rng.integers(
+        low=0, high=len(pp.posterior_predictive["draw"]), size=_ndraw
+    )
+
+    for ichain, idraw in zip(idxs_chain, idxs_draw):
+        samples = pp.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
+        kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
+
+        ax.plot(kde_x, kde_y, color="C0", lw=0.5, zorder=3, alpha=0.1)
+
+    # plot the individual model components
+    mean_params = idata.posterior.mean(dim=("chain", "draw"))
     plot_range = np.linspace(
         obs_data.min(),
         obs_data.max(),
@@ -85,19 +131,14 @@ def plot_fit(idata, pp, params):
             plot_range, new_w, mean_params["mu"].values, mean_params["sigma"].values
         )
 
-        ax.plot(plot_range, analytic, label=f"c{i}")
+        ax.plot(plot_range, analytic, label=f"c{i}", zorder=6)
 
-    ax.legend([])
-    ax.get_legend().remove()
+    ax.legend(loc="best")
     ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
     ax.set_ylabel("PDF")
     ax.set_yscale("log")
-
-    # set ylim to the density corresponding to one bin count
-    # ax.set_ylim(bottom=0.7 * min_density)
     ax.set_ylim(bottom=1.0e-6, top=10.0)
 
-    fig = plt.gcf()
     fig.tight_layout()
 
     # output plot to file
