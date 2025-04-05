@@ -94,9 +94,9 @@ def plot_fit(idata, pp, params):
         [0.99 for _ in range(len(obs_data))],
         marker="|",
         color="black",
-        lw=0.4,
+        lw=0.3,
         transform=trans,
-        alpha=0.2,
+        alpha=0.1,
         rasterized=True,
     )
 
@@ -127,7 +127,7 @@ def plot_fit(idata, pp, params):
         np.linspace(
             obs_data.min(),
             obs_data.max(),
-            num=500,
+            num=1000,
         ),
         dims="plot",
     )
@@ -136,7 +136,7 @@ def plot_fit(idata, pp, params):
         component = i
 
         ana_full = xr.apply_ufunc(
-            fmodels.normal_lognormal_analytic,
+            fmodels.normal_lognormal_analytic_pdf,
             plot_range,
             idata.posterior["w"],
             idata.posterior["mu"],

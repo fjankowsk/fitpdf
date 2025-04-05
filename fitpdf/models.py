@@ -45,6 +45,11 @@ def normal_lognormal(t_data):
     """
     Construct a normal - lognormal mixture model.
 
+    Parameters
+    ----------
+    t_data: ~np.array of float
+        The input data.
+
     Returns
     -------
     model: ~pm.Model
@@ -78,14 +83,20 @@ def normal_lognormal(t_data):
     return model
 
 
-def normal_lognormal_analytic(x, w, mu, sigma, component):
-    norm = stats.norm.pdf(x, loc=mu, scale=sigma)
-    lognorm = stats.lognorm.pdf(x, s=sigma, loc=mu)
+def normal_lognormal_analytic_pdf(x, w, mu, sigma, component):
+    """
+    Get the analytic PDF for the normal - lognormal model.
+
+    Returns
+    -------
+    pdf: ~np.array of float
+        The model PDF evaluated at the `x` values.
+    """
 
     if component == 0:
-        pdf = w * norm
+        pdf = w * stats.norm.pdf(x, loc=mu, scale=sigma)
     elif component == 1:
-        pdf = w * lognorm
+        pdf = w * stats.lognorm.pdf(x, s=sigma, loc=mu)
     else:
         raise NotImplementedError(f"Component not implemented: {component}")
 
