@@ -10,6 +10,7 @@ import matplotlib.transforms as transforms
 import numpy as np
 from KDEpy import FFTKDE, TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
+import xarray as xr
 
 import fitpdf.models as fmodels
 from fitpdf.stats import get_adaptive_bandwidth
@@ -122,22 +123,29 @@ def plot_fit(idata, pp, params):
         ax.plot(kde_x, kde_y, color="C0", lw=0.5, zorder=3, alpha=0.1, rasterized=True)
 
     # plot the individual model components
-    mean_params = idata.posterior.mean(dim=("chain", "draw"))
-    plot_range = np.linspace(
-        obs_data.min(),
-        obs_data.max(),
-        num=500,
+    plot_range = xr.DataArray(
+        np.linspace(
+            obs_data.min(),
+            obs_data.max(),
+            num=500,
+        ),
+        dims="plot",
     )
 
     for i in range(2):
-        new_w = np.zeros(2)
-        new_w[i] = mean_params["w"][i].values
+        component = i
 
-        analytic = fmodels.normal_lognormal_analytic(
-            plot_range, new_w, mean_params["mu"].values, mean_params["sigma"].values
+        ana_full = xr.apply_ufunc(
+            fmodels.normal_lognormal_analytic,
+            plot_range,
+            idata.posterior["w"],
+            idata.posterior["mu"],
+            idata.posterior["sigma"],
+            component,
         )
+        pdf = ana_full.mean(dim=("chain", "draw")).sel(component=i)
 
-        ax.plot(plot_range, analytic, lw=1, label=f"c{i}", zorder=6)
+        ax.plot(plot_range, pdf, lw=1, label=f"c{i}", zorder=6)
 
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:

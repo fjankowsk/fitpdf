@@ -78,11 +78,16 @@ def normal_lognormal(t_data):
     return model
 
 
-def normal_lognormal_analytic(x, w, mu, sigma):
-    norm = stats.norm.pdf(x, loc=mu[0], scale=sigma[0])
-    lognorm = stats.lognorm.pdf(x, s=sigma[1], loc=mu[1])
+def normal_lognormal_analytic(x, w, mu, sigma, component):
+    norm = stats.norm.pdf(x, loc=mu, scale=sigma)
+    lognorm = stats.lognorm.pdf(x, s=sigma, loc=mu)
 
-    pdf = w[0] * norm + w[1] * lognorm
+    if component == 0:
+        pdf = w * norm
+    elif component == 1:
+        pdf = w * lognorm
+    else:
+        raise NotImplementedError(f"Component not implemented: {component}")
 
     return pdf
 
