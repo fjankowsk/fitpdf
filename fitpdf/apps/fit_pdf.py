@@ -197,22 +197,6 @@ def fit_pe_dist(t_data, params):
     with model:
         pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
 
-    fig = plt.figure()
-    ax = fig.add_subplot()
-
-    ax.hist(
-        pp.posterior_predictive["obs"].values.reshape(-1),
-        color="black",
-        bins=50,
-        density=True,
-        histtype="step",
-        linewidth=2,
-    )
-
-    ax.set_yscale("log")
-
-    fig.tight_layout()
-
     plot_fit(idata, pp, params)
 
 
