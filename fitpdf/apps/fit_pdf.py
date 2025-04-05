@@ -5,7 +5,6 @@ import signal
 import sys
 
 import arviz as az
-import corner
 
 # switch between interactive and non-interactive mode
 import matplotlib
@@ -25,6 +24,7 @@ from spanalysis.general_helpers import (
     signal_handler,
 )
 import fitpdf.models as fmodels
+from fitpdf.plotting import plot_corner, plot_fit
 
 
 def parse_args():
@@ -189,7 +189,7 @@ def fit_pe_dist(t_data, params):
 
     az.plot_trace(idata)
 
-    corner.corner(idata, plot_datapoints=False)
+    plot_corner(idata)
 
     # posterior predictive
     thinned_idata = idata.sel(draw=slice(None, None, 20))
@@ -200,7 +200,7 @@ def fit_pe_dist(t_data, params):
     fig = plt.figure()
     ax = fig.add_subplot()
 
-    _density, _, _ = ax.hist(
+    ax.hist(
         pp.posterior_predictive["obs"].values.reshape(-1),
         color="black",
         bins=50,
@@ -209,51 +209,11 @@ def fit_pe_dist(t_data, params):
         linewidth=2,
     )
 
-    _mask = np.isfinite(_density) & (_density > 0)
-    min_density = np.min(_density[_mask])
-
     ax.set_yscale("log")
 
     fig.tight_layout()
 
-    figsize = (6.4, 4.8)
-    ax = az.plot_ppc(pp, figsize=figsize, num_pp_samples=50)
-
-    mean_params = idata.posterior.mean(("chain", "draw"))
-
-    # plot the individual components
-    plot_range = np.linspace(data.min(), data.max(), num=500)
-
-    for i in range(2):
-        new_w = np.zeros(2)
-        new_w[i] = mean_params["w"][i].values
-
-        analytic = fmodels.normal_lognormal_analytic(
-            plot_range, new_w, mean_params["mu"].values, mean_params["sigma"].values
-        )
-
-        ax.plot(plot_range, analytic, label=f"c{i}")
-
-    ax.legend(loc="best")
-    ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
-    ax.set_ylabel("PDF")
-    ax.set_yscale("log")
-
-    # set ylim to the density corresponding to one bin count
-    # ax.set_ylim(bottom=0.7 * min_density)
-
-    fig = plt.gcf()
-    fig.tight_layout()
-
-    # output plot to file
-    if params["output"]:
-        fig.savefig(
-            "pedist_fit.pdf",
-            bbox_inches="tight",
-            dpi=params["dpi"],
-        )
-
-        plt.close(fig)
+    plot_fit(data, idata, params)
 
 
 def plot_pe_dist(dfs, params):
