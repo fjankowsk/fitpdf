@@ -8,7 +8,8 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import numpy as np
-from KDEpy import FFTKDE
+from KDEpy import FFTKDE, TreeKDE
+from KDEpy.bw_selection import improved_sheather_jones
 
 import fitpdf.models as fmodels
 
@@ -67,7 +68,7 @@ def plot_fit(idata, pp, params):
     Plot the distribution fit.
     """
 
-    obs_data = idata.observed_data["obs"].values
+    obs_data = np.sort(idata.observed_data["obs"].values)
 
     fig = plt.figure()
     ax = fig.add_subplot()
@@ -79,10 +80,25 @@ def plot_fit(idata, pp, params):
         color="black",
         density=True,
         histtype="step",
-        linewidth=2,
+        # linewidth=2,
+        linewidth=0,
         label="data",
         zorder=4,
     )
+
+    # kernel density estimate
+    # use adaptive bandwidth
+    isj_bws = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
+    print(f"ISJ kernel bandwidth: {isj_bws:.5f}")
+
+    bandwidths = np.zeros(len(obs_data))
+    bandwidths[:-1] = np.diff(obs_data)
+    bandwidths[-1] = bandwidths[-2]
+    bandwidths = np.clip(bandwidths, a_min=0.1, a_max=None)
+    print(bandwidths)
+
+    kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
+    ax.plot(kde_x, kde_y, color="black", lw=2, label="data", zorder=4)
 
     # rug plot
     # use data coordinates in horizontal and axis coordinates in vertical direction
