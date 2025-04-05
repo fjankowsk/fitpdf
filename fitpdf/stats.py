@@ -30,7 +30,7 @@ def get_adaptive_bandwidth(t_data, min_bw):
     assert min_bw > 0
 
     bandwidths = np.zeros(len(data))
-    bandwidths[:-1] = np.diff(data)
+    bandwidths[:-1] = 0.5 * np.diff(data)
     bandwidths[-1] = bandwidths[-2]
     bandwidths = np.clip(bandwidths, a_min=min_bw, a_max=None)
 

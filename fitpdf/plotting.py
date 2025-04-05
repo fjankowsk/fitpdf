@@ -92,7 +92,7 @@ def plot_fit(idata, pp, params):
     isj_bw = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
     print(f"ISJ kernel bandwidth: {isj_bw:.5f}")
 
-    bandwidths = get_adaptive_bandwidth(obs_data, min_bw=5.0 * isj_bw)
+    bandwidths = get_adaptive_bandwidth(obs_data, min_bw=7.0 * isj_bw)
     print(bandwidths)
 
     kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
