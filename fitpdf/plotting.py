@@ -92,9 +92,10 @@ def plot_fit(idata, pp, params):
         [0.99 for _ in range(len(obs_data))],
         marker="|",
         color="black",
-        lw=0.8,
+        lw=0.4,
         transform=trans,
-        alpha=0.3,
+        alpha=0.2,
+        rasterized=True,
     )
 
     # plot the mean model
@@ -117,7 +118,7 @@ def plot_fit(idata, pp, params):
         samples = pp.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
         kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
 
-        ax.plot(kde_x, kde_y, color="C0", lw=0.5, zorder=3, alpha=0.1)
+        ax.plot(kde_x, kde_y, color="C0", lw=0.5, zorder=3, alpha=0.1, rasterized=True)
 
     # plot the individual model components
     mean_params = idata.posterior.mean(dim=("chain", "draw"))
@@ -135,7 +136,7 @@ def plot_fit(idata, pp, params):
             plot_range, new_w, mean_params["mu"].values, mean_params["sigma"].values
         )
 
-        ax.plot(plot_range, analytic, label=f"c{i}", zorder=6)
+        ax.plot(plot_range, analytic, lw=1, label=f"c{i}", zorder=6)
 
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:
