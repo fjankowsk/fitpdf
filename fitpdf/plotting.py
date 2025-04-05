@@ -75,20 +75,7 @@ def plot_fit(idata, pp, params):
     ax = fig.add_subplot()
 
     # plot the observed data
-    _density_data, _, _ = ax.hist(
-        obs_data,
-        bins=params["nbin"],
-        color="black",
-        density=True,
-        histtype="step",
-        # linewidth=2,
-        linewidth=0,
-        label="data",
-        zorder=4,
-    )
-
-    # kernel density estimate
-    # use adaptive bandwidth
+    # kernel density estimate using adaptive bandwidth
     isj_bw = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
     print(f"ISJ kernel bandwidth: {isj_bw:.5f}")
 
@@ -162,6 +149,12 @@ def plot_fit(idata, pp, params):
     ax.set_xlim(left=1.25 * obs_data.min(), right=1.05 * obs_data.max())
 
     # set the limits to a bin count of unity
+    _density_data, _ = np.histogram(
+        obs_data,
+        bins=params["nbin"],
+        density=True,
+    )
+
     _mask = np.isfinite(_density_data) & (_density_data > 0)
     min_density = np.min(_density_data[_mask])
     max_density = np.max(_density_data[_mask])
