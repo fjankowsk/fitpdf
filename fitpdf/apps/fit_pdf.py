@@ -24,7 +24,7 @@ from spanalysis.general_helpers import (
     signal_handler,
 )
 import fitpdf.models as fmodels
-from fitpdf.plotting import plot_corner, plot_fit
+from fitpdf.plotting import plot_chains, plot_corner, plot_fit
 
 
 def parse_args():
@@ -186,12 +186,11 @@ def fit_pe_dist(t_data, t_offp, params):
     model = fmodels.normal_lognormal(data)
 
     with model:
-        idata = pm.sample(draws=500, chains=4)
+        idata = pm.sample(draws=8000, chains=4)
         pm.compute_log_likelihood(idata)
 
     print(az.summary(idata))
-
-    az.plot_trace(idata)
+    plot_chains(idata, params)
     plot_corner(idata, params)
 
     # posterior predictive

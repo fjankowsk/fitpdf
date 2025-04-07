@@ -16,6 +16,26 @@ import fitpdf.models as fmodels
 from fitpdf.stats import get_adaptive_bandwidth
 
 
+def plot_chains(idata, params):
+    """
+    Plot the chains.
+    """
+
+    fig = az.plot_trace(idata)
+
+    fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "chains.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)
+
+
 def plot_corner(idata, params):
     """
     Make a corner plot.
@@ -47,7 +67,7 @@ def plot_corner(idata, params):
         show_titles = False
         smooth = True
 
-    corner.corner(
+    fig = corner.corner(
         idata,
         bins=bins,
         hist_kwargs=hist_kwargs,
@@ -60,6 +80,16 @@ def plot_corner(idata, params):
         smooth=smooth,
         title_kwargs={"fontsize": 10},
     )
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "corner.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)
 
     # reset
     matplotlib.rcParams["font.size"] = fontsize_before
@@ -81,7 +111,7 @@ def plot_fit(idata, pp, offp, params):
     print(f"ISJ kernel bandwidth: {isj_bw:.5f}")
 
     bandwidths = get_adaptive_bandwidth(obs_data, min_bw=7.0 * isj_bw)
-    print(bandwidths)
+    print(f"Bandwidths: {bandwidths}")
 
     kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
 
@@ -107,16 +137,19 @@ def plot_fit(idata, pp, offp, params):
     )
 
     # off pulse
-    ax.hist(
-        offp,
-        bins=params["nbin"],
+    isj_bw = improved_sheather_jones(offp.reshape(offp.shape[0], -1))
+    bandwidths = get_adaptive_bandwidth(offp, min_bw=10.0 * isj_bw)
+    kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(offp).evaluate()
+
+    ax.fill_between(
+        x=kde_x,
+        y1=kde_y,
+        y2=0,
         color="dimgrey",
-        density=True,
-        histtype="stepfilled",
-        linewidth=2,
         label="off",
+        lw=2,
+        alpha=0.2,
         zorder=3,
-        alpha=0.4,
     )
 
     # plot the mean model
@@ -139,7 +172,9 @@ def plot_fit(idata, pp, offp, params):
         samples = pp.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
         kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
 
-        ax.plot(kde_x, kde_y, color="C0", lw=0.5, zorder=3, alpha=0.1, rasterized=True)
+        ax.plot(
+            kde_x, kde_y, color="C0", lw=0.5, zorder=3.5, alpha=0.1, rasterized=True
+        )
 
     # plot the individual model components
     plot_range = xr.DataArray(
