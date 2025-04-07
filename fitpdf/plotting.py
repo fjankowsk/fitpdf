@@ -65,7 +65,7 @@ def plot_corner(idata, params):
     matplotlib.rcParams["font.size"] = fontsize_before
 
 
-def plot_fit(idata, pp, params):
+def plot_fit(idata, pp, offp, params):
     """
     Plot the distribution fit.
     """
@@ -84,7 +84,13 @@ def plot_fit(idata, pp, params):
     print(bandwidths)
 
     kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
-    ax.plot(kde_x, kde_y, color="black", lw=2, label="data", zorder=4)
+
+    if params["labels"] is None:
+        label = "data"
+    else:
+        label = params["labels"][0]
+
+    ax.plot(kde_x, kde_y, color="black", lw=2, label=label, zorder=4)
 
     # rug plot
     # use data coordinates in horizontal and axis coordinates in vertical direction
@@ -98,6 +104,19 @@ def plot_fit(idata, pp, params):
         transform=trans,
         alpha=0.1,
         rasterized=True,
+    )
+
+    # off pulse
+    ax.hist(
+        offp,
+        bins=params["nbin"],
+        color="dimgrey",
+        density=True,
+        histtype="stepfilled",
+        linewidth=2,
+        label="off",
+        zorder=3,
+        alpha=0.4,
     )
 
     # plot the mean model

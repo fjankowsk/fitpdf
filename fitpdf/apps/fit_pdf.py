@@ -166,24 +166,27 @@ def check_args(args):
             sys.exit(1)
 
 
-def fit_pe_dist(t_data, params):
+def fit_pe_dist(t_data, t_offp, params):
     """
     Fit pulse-energy distribution.
 
     Parameters
     ----------
-    t_data: ~np.array
+    t_data: ~np.array of float
         The input data.
+    t_offp: ~np.array of float
+        The off-pulse data.
     params: dict
         Additional parameters that influence the processing.
     """
 
     data = t_data.copy()
+    offp = t_offp.copy()
 
     model = fmodels.normal_lognormal(data)
 
     with model:
-        idata = pm.sample(draws=2000, chains=4)
+        idata = pm.sample(draws=500, chains=4)
         pm.compute_log_likelihood(idata)
 
     print(az.summary(idata))
@@ -197,7 +200,7 @@ def fit_pe_dist(t_data, params):
     with model:
         pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
 
-    plot_fit(idata, pp, params)
+    plot_fit(idata, pp, offp, params)
 
 
 def plot_pe_dist(dfs, params):
@@ -265,9 +268,6 @@ def plot_pe_dist(dfs, params):
         else:
             color = f"C{i - 1}"
 
-        # fit data
-        fit_pe_dist(data / params["mean"], params)
-
         # on-pulse
         _density, _, _ = ax.hist(
             data / params["mean"],
@@ -327,6 +327,9 @@ def plot_pe_dist(dfs, params):
                 zorder=3,
                 alpha=0.4,
             )
+
+    # fit data
+    fit_pe_dist(data / params["mean"], offp / params["mean"], params)
 
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:
