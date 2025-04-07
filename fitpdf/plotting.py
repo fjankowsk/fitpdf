@@ -146,9 +146,10 @@ def plot_fit(idata, pp, offp, params):
         x=kde_x,
         y1=kde_y,
         y2=0,
-        color="dimgrey",
+        facecolor="dimgrey",
+        edgecolor="none",
         label="off",
-        lw=None,
+        lw=0,
         alpha=0.2,
         zorder=3,
     )
