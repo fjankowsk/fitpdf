@@ -186,7 +186,7 @@ def fit_pe_dist(t_data, t_offp, params):
     model = fmodels.normal_lognormal(data)
 
     with model:
-        idata = pm.sample(draws=10000, chains=4)
+        idata = pm.sample(draws=10000, chains=4, init="advi+adapt_diag")
         pm.compute_log_likelihood(idata)
 
     print(az.summary(idata))

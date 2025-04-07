@@ -64,16 +64,25 @@ def normal_lognormal(t_data):
         x = pm.Data("x", data, dims="obs_id")
 
         # mixture weights
-        w = pm.Dirichlet("w", a=np.array([1, 1]), dims="component")
+        w = pm.Dirichlet("w", a=np.array([1.0, 1.0]), dims="component")
 
         # priors
-        mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1, dims="component")
-        sigma = pm.HalfNormal("sigma", sigma=np.array([1, 1]), dims="component")
+        mu = pm.Normal(
+            "mu",
+            mu=np.array([0.0, np.log(1.0)]),
+            sigma=np.array([1.0, 1.0]),
+            dims="component",
+        )
+        sigma = pm.HalfNormal(
+            "sigma", sigma=np.array([1.0, np.log(1.75)]), dims="component"
+        )
 
         # 1) normal distribution for nulling
+        # mu = location, sigma = scale
         norm = pm.Normal.dist(mu=mu[0], sigma=sigma[0])
 
         # 2) lognormal distribution for pulses
+        # mu = log of location, sigma = log of scale
         lognorm = pm.Lognormal.dist(mu=mu[1], sigma=sigma[1])
 
         components = [norm, lognorm]
