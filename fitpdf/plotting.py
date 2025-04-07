@@ -21,8 +21,9 @@ def plot_chains(idata, params):
     Plot the chains.
     """
 
-    fig = az.plot_trace(idata)
+    az.plot_trace(idata)
 
+    fig = plt.gcf()
     fig.tight_layout()
 
     # output plot to file
@@ -147,7 +148,7 @@ def plot_fit(idata, pp, offp, params):
         y2=0,
         color="dimgrey",
         label="off",
-        lw=2,
+        lw=None,
         alpha=0.2,
         zorder=3,
     )
