@@ -197,9 +197,10 @@ def fit_pe_dist(t_data, t_offp, params):
     thinned_idata = idata.sel(draw=slice(None, None, 20))
 
     with model:
-        pm.sample_posterior_predictive(
-            thinned_idata, extend_inferencedata=True, var_names=["obs"]
-        )
+        pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
+        idata.extend(pp)
+
+    assert hasattr(idata, "posterior_predictive")
 
     plot_fit(idata, offp, params)
 
