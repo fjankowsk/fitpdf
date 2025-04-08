@@ -96,7 +96,7 @@ def plot_corner(idata, params):
     matplotlib.rcParams["font.size"] = fontsize_before
 
 
-def plot_fit(idata, pp, offp, params):
+def plot_fit(idata, offp, params):
     """
     Plot the distribution fit.
     """
@@ -155,7 +155,7 @@ def plot_fit(idata, pp, offp, params):
     )
 
     # plot the mean model
-    samples = pp.posterior_predictive["obs"].values.reshape(-1)
+    samples = idata.posterior_predictive["obs"].values.reshape(-1)
     kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
 
     ax.plot(kde_x, kde_y, color="firebrick", lw=1.5, label="model", zorder=5)
@@ -164,14 +164,16 @@ def plot_fit(idata, pp, offp, params):
     _ndraw = 50
     rng = np.random.default_rng()
     idxs_chain = rng.integers(
-        low=0, high=len(pp.posterior_predictive["chain"]), size=_ndraw
+        low=0, high=len(idata.posterior_predictive["chain"]), size=_ndraw
     )
     idxs_draw = rng.integers(
-        low=0, high=len(pp.posterior_predictive["draw"]), size=_ndraw
+        low=0, high=len(idata.posterior_predictive["draw"]), size=_ndraw
     )
 
     for ichain, idraw in zip(idxs_chain, idxs_draw):
-        samples = pp.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
+        samples = (
+            idata.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
+        )
         kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
 
         ax.plot(
