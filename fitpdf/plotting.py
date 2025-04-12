@@ -224,7 +224,9 @@ def plot_fit(idata, offp, params):
         )
         pdf = ana_full.mean(dim=("chain", "draw")).sel(component=i)
 
-        print("Component {0}: {1:.3f}".format(i, integrate.trapezoid(pdf)))
+        print(
+            "Component {0}: {1:.3f}".format(i, integrate.trapezoid(pdf, x=plot_range))
+        )
 
         ax.plot(plot_range, pdf, lw=1, label=f"c{i}", zorder=6)
 
