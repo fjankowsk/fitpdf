@@ -8,7 +8,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import numpy as np
-from KDEpy import FFTKDE, TreeKDE
+from KDEpy import TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
 import xarray as xr
 
@@ -114,14 +114,16 @@ def plot_fit(idata, offp, params):
     bandwidths = get_adaptive_bandwidth(obs_data, min_bw=7.0 * isj_bw)
     print(f"Bandwidths: {bandwidths}")
 
-    kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
+    kde_x_data, kde_y_data = (
+        TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
+    )
 
     if params["labels"] is None:
         label = "data"
     else:
         label = params["labels"][0]
 
-    ax.plot(kde_x, kde_y, color="black", lw=2, label=label, zorder=4)
+    ax.plot(kde_x_data, kde_y_data, color="black", lw=2, label=label, zorder=4)
 
     # rug plot
     # use data coordinates in horizontal and axis coordinates in vertical direction
@@ -156,9 +158,9 @@ def plot_fit(idata, offp, params):
 
     # plot the mean model
     samples = idata.posterior_predictive["obs"].values.reshape(-1)
-    kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
+    kde_y = TreeKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate(kde_x_data)
 
-    ax.plot(kde_x, kde_y, color="firebrick", lw=1.5, label="model", zorder=5)
+    ax.plot(kde_x_data, kde_y, color="firebrick", lw=1.5, label="model", zorder=5)
 
     # plot the individual pp draws
     _ndraw = 50
@@ -174,10 +176,16 @@ def plot_fit(idata, offp, params):
         samples = (
             idata.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
         )
-        kde_x, kde_y = FFTKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate()
+        kde_y = TreeKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate(kde_x_data)
 
         ax.plot(
-            kde_x, kde_y, color="C0", lw=0.5, zorder=3.5, alpha=0.1, rasterized=True
+            kde_x_data,
+            kde_y,
+            color="C0",
+            lw=0.5,
+            zorder=3.5,
+            alpha=0.1,
+            rasterized=True,
         )
 
     # plot the individual model components
