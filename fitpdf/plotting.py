@@ -8,7 +8,7 @@ import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import numpy as np
-from KDEpy import TreeKDE
+from KDEpy import FFTKDE, TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
 import xarray as xr
 
@@ -108,10 +108,13 @@ def plot_fit(idata, offp, params):
 
     # plot the observed data
     # kernel density estimate using adaptive bandwidth
-    isj_bw = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
-    print(f"ISJ kernel bandwidth: {isj_bw:.5f}")
+    isj_bw_data = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
+    print(f"ISJ kernel bandwidth data: {isj_bw_data:.5f}")
 
-    bandwidths = get_adaptive_bandwidth(obs_data, min_bw=7.0 * isj_bw)
+    min_bw_data = 7.0 * isj_bw_data
+    print(f"Minimum bandwidth data: {min_bw_data:.5f}")
+
+    bandwidths = get_adaptive_bandwidth(obs_data, min_bw=min_bw_data)
     print(f"Bandwidths: {bandwidths}")
 
     kde_x_data, kde_y_data = (
@@ -140,9 +143,9 @@ def plot_fit(idata, offp, params):
     )
 
     # off pulse
-    isj_bw = improved_sheather_jones(offp.reshape(offp.shape[0], -1))
-    bandwidths = get_adaptive_bandwidth(offp, min_bw=10.0 * isj_bw)
-    kde_x, kde_y = TreeKDE(kernel="gaussian", bw=bandwidths).fit(offp).evaluate()
+    _isj_bw = improved_sheather_jones(offp.reshape(offp.shape[0], -1))
+    _bandwidths = get_adaptive_bandwidth(offp, min_bw=10.0 * _isj_bw)
+    kde_x, kde_y = TreeKDE(kernel="gaussian", bw=_bandwidths).fit(offp).evaluate()
 
     ax.fill_between(
         x=kde_x,
@@ -158,7 +161,12 @@ def plot_fit(idata, offp, params):
 
     # plot the mean model
     samples = idata.posterior_predictive["obs"].values.reshape(-1)
-    kde_y = TreeKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate(kde_x_data)
+    _mask = (samples >= kde_x_data.min()) & (samples <= kde_x_data.max())
+    kde_y = (
+        FFTKDE(kernel="gaussian", bw=min_bw_data)
+        .fit(samples[_mask])
+        .evaluate(kde_x_data)
+    )
 
     ax.plot(kde_x_data, kde_y, color="firebrick", lw=1.5, label="model", zorder=5)
 
@@ -176,7 +184,10 @@ def plot_fit(idata, offp, params):
         samples = (
             idata.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
         )
-        kde_y = TreeKDE(kernel="gaussian", bw="ISJ").fit(samples).evaluate(kde_x_data)
+        bandwidths = get_adaptive_bandwidth(offp, min_bw=min_bw_data)
+        kde_y = (
+            TreeKDE(kernel="gaussian", bw=bandwidths).fit(samples).evaluate(kde_x_data)
+        )
 
         ax.plot(
             kde_x_data,
@@ -210,6 +221,8 @@ def plot_fit(idata, offp, params):
             component,
         )
         pdf = ana_full.mean(dim=("chain", "draw")).sel(component=i)
+
+        print("Component {0}: {1:.3f}".format(i, np.sum(pdf)))
 
         ax.plot(plot_range, pdf, lw=1, label=f"c{i}", zorder=6)
 
