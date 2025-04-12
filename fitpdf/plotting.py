@@ -10,6 +10,7 @@ import matplotlib.transforms as transforms
 import numpy as np
 from KDEpy import FFTKDE, TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
+from scipy import integrate
 import xarray as xr
 
 import fitpdf.models as fmodels
@@ -160,6 +161,7 @@ def plot_fit(idata, offp, params):
     )
 
     # plot the mean model
+    # use fftkde here with non-adaptive bandwidth for speed
     samples = idata.posterior_predictive["obs"].values.reshape(-1)
     _mask = (samples >= kde_x_data.min()) & (samples <= kde_x_data.max())
     kde_y = (
@@ -184,7 +186,7 @@ def plot_fit(idata, offp, params):
         samples = (
             idata.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
         )
-        bandwidths = get_adaptive_bandwidth(offp, min_bw=min_bw_data)
+        bandwidths = get_adaptive_bandwidth(samples, min_bw=min_bw_data)
         kde_y = (
             TreeKDE(kernel="gaussian", bw=bandwidths).fit(samples).evaluate(kde_x_data)
         )
@@ -222,7 +224,7 @@ def plot_fit(idata, offp, params):
         )
         pdf = ana_full.mean(dim=("chain", "draw")).sel(component=i)
 
-        print("Component {0}: {1:.3f}".format(i, np.sum(pdf)))
+        print("Component {0}: {1:.3f}".format(i, integrate.trapezoid(pdf)))
 
         ax.plot(plot_range, pdf, lw=1, label=f"c{i}", zorder=6)
 
