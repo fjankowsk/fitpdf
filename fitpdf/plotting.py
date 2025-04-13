@@ -11,6 +11,7 @@ import numpy as np
 from KDEpy import FFTKDE, TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
 from scipy import integrate
+from scipy import stats
 import xarray as xr
 
 import fitpdf.models as fmodels
@@ -160,7 +161,7 @@ def plot_fit(idata, offp, params):
         zorder=3,
     )
 
-    # plot the mean model
+    # plot the best-fitting model
     # use fftkde here with non-adaptive bandwidth for speed
     samples = idata.posterior_predictive["obs"].values.reshape(-1)
     _mask = (samples >= kde_x_data.min()) & (samples <= kde_x_data.max())
@@ -171,6 +172,14 @@ def plot_fit(idata, offp, params):
     )
 
     ax.plot(kde_x_data, kde_y, color="firebrick", lw=1.5, label="model", zorder=5)
+
+    # perform a two-sample kolmogorov-smirnov test
+    ks_test = stats.ks_2samp(obs_data, samples, axis=None)
+    print("Two-sample KS test data vs model:")
+    print(f"Statistic: {ks_test.statistic:.3f}")
+    print(f"p-value: {ks_test.pvalue:.3f}")
+    print(f"Location: {ks_test.statistic_location:.3f}")
+    print(f"Sign: {ks_test.statistic_sign}")
 
     # plot the individual pp draws
     _ndraw = 50
