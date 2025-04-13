@@ -4,7 +4,6 @@
 
 import numpy as np
 import pymc as pm
-from scipy import stats
 
 
 def normal_normal(t_data):
@@ -92,7 +91,7 @@ def normal_lognormal(t_data):
     return model
 
 
-def normal_lognormal_analytic_pdf(x, w, mu, sigma, component):
+def normal_lognormal_analytic_pdf(x, w, mu, sigma, icomp):
     """
     Get the analytic PDF for the normal - lognormal model.
 
@@ -102,14 +101,16 @@ def normal_lognormal_analytic_pdf(x, w, mu, sigma, component):
         The model PDF evaluated at the `x` values.
     """
 
-    if component == 0:
-        pdf = w * stats.norm.pdf(x, loc=mu, scale=sigma)
-    elif component == 1:
-        pdf = w * stats.lognorm.pdf(x, s=sigma, loc=mu)
+    if icomp == 0:
+        dist = pm.Normal.dist(mu=mu, sigma=sigma)
+    elif icomp == 1:
+        dist = pm.Lognormal.dist(mu=mu, sigma=sigma)
     else:
-        raise NotImplementedError(f"Component not implemented: {component}")
+        raise NotImplementedError(f"Component not implemented: {icomp}")
 
-    return pdf
+    pdf = w[icomp] * pm.logp(dist, x).exp()
+
+    return pdf.eval()
 
 
 def lognormal_lognormal(t_data):
