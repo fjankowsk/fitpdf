@@ -198,7 +198,7 @@ def fit_pe_dist(t_data, t_offp, params):
     plot_chains(idata, params)
     plot_corner(idata, params)
 
-    # posterior predictive
+    # compute posterior predictive samples
     thinned_idata = idata.sel(draw=slice(None, None, 20))
 
     with model:
@@ -206,6 +206,19 @@ def fit_pe_dist(t_data, t_offp, params):
         idata.extend(pp)
 
     assert hasattr(idata, "posterior_predictive")
+
+    # compute component-separated posterior predictive samples
+    for i in range(2):
+        name = f"pp_{i}"
+
+        weights = np.array([0.0, 0.0])
+        weights[i] = 1.0
+
+        with pm.do(model, {model["w"]: weights}) as model_do:
+            pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
+            idata.add_groups({name: pp.posterior_predictive})
+
+        assert hasattr(idata, name)
 
     plot_fit(idata, offp, params)
 
