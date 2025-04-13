@@ -235,7 +235,27 @@ def plot_fit(idata, offp, params):
             "Component {0}: {1:.3f}".format(i, integrate.trapezoid(pdf, x=plot_range))
         )
 
-        ax.plot(plot_range, pdf, lw=1, label=f"c{i}", zorder=6)
+        ax.plot(plot_range, pdf, label=f"c{i}", lw=1, zorder=6)
+
+    for i in range(2):
+        name = f"pp_{i}"
+
+        # use fftkde here with non-adaptive bandwidth for speed
+        samples = idata[name]["obs"].values.reshape(-1)
+        _mask = (samples >= kde_x_data.min()) & (samples <= kde_x_data.max())
+        kde_y = (
+            FFTKDE(kernel="gaussian", bw=min_bw_data)
+            .fit(samples[_mask])
+            .evaluate(kde_x_data)
+        )
+
+        ax.plot(
+            kde_x_data,
+            kde_y,
+            label=f"c{i}",
+            lw=1,
+            zorder=6,
+        )
 
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:
