@@ -212,15 +212,13 @@ def plot_fit(idata, offp, params):
     )
 
     for i in range(2):
-        component = i
-
         ana_full = xr.apply_ufunc(
             fmodels.normal_lognormal_analytic_pdf,
             plot_range,
             idata.posterior["w"],
             idata.posterior["mu"],
             idata.posterior["sigma"],
-            component,
+            i,
         )
         pdf = ana_full.mean(dim=("chain", "draw")).sel(component=i)
 
