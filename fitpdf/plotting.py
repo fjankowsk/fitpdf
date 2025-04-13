@@ -240,7 +240,7 @@ def plot_fit(idata, offp, params):
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:
         ax.set_title(params["title"])
-    ax.set_xlabel(r"$F_\mathrm{on} \: / \: \left< F_\mathrm{on} \right>$")
+    ax.set_xlabel(r"$F \: / \: \left< F_\mathrm{on} \right>$")
     ax.set_ylabel("PDF")
     ax.set_yscale("log")
 
