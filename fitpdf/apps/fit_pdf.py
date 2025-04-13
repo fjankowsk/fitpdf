@@ -188,6 +188,7 @@ def fit_pe_dist(t_data, t_offp, params):
     print(f"All RVs: {model.basic_RVs}")
     print(f"Free RVs: {model.free_RVs}")
     print(f"Observed RVs: {model.observed_RVs}")
+    print(f"Initial point: {model.initial_point()}")
 
     with model:
         idata = pm.sample(draws=10000, chains=4, init="advi+adapt_diag")
