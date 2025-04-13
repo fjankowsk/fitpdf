@@ -186,9 +186,9 @@ def plot_fit(idata, offp, params):
         samples = (
             idata.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
         )
-        bandwidths = get_adaptive_bandwidth(samples, min_bw=min_bw_data)
+        _bandwidths = get_adaptive_bandwidth(samples, min_bw=min_bw_data)
         kde_y = (
-            TreeKDE(kernel="gaussian", bw=bandwidths).fit(samples).evaluate(kde_x_data)
+            TreeKDE(kernel="gaussian", bw=_bandwidths).fit(samples).evaluate(kde_x_data)
         )
 
         ax.plot(
