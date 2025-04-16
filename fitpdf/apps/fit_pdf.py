@@ -205,7 +205,8 @@ def fit_pe_dist(t_data, t_offp, params):
 
     # compute prior predictive samples
     with model:
-        pp = pm.sample_prior_predictive(var_names=["obs"])
+        # sample all the parameters
+        pp = pm.sample_prior_predictive()
 
     assert hasattr(pp, "prior_predictive")
 

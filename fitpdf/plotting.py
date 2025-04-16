@@ -313,6 +313,27 @@ def plot_prior_predictive(idata, t_data, t_offp, params):
     data = t_data.copy()
     offp = t_offp.copy()
 
+    # 1) density plot for all parameters
+    az.plot_density(
+        idata,
+        group="prior",
+        shade=0.1,
+    )
+
+    fig = plt.gcf()
+    fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "prior_predictive_densities.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)
+
+    # 2) comparison with the data
     fig = plt.figure()
     ax = fig.add_subplot()
 
@@ -370,7 +391,7 @@ def plot_prior_predictive(idata, t_data, t_offp, params):
     # output plot to file
     if params["output"]:
         fig.savefig(
-            "prior_predictive.pdf",
+            "prior_predictive_data.pdf",
             bbox_inches="tight",
             dpi=params["dpi"],
         )
