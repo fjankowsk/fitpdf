@@ -40,14 +40,16 @@ def normal_normal(t_data):
     return model
 
 
-def normal_lognormal(t_data):
+def normal_lognormal(t_data, t_offp):
     """
     Construct a normal - lognormal mixture model.
 
     Parameters
     ----------
     t_data: ~np.array of float
-        The input data.
+        The input data to be fit.
+    t_offp: ~np.array of float
+        The off-pulse data.
 
     Returns
     -------
@@ -56,6 +58,19 @@ def normal_lognormal(t_data):
     """
 
     data = t_data.copy()
+    offp = t_offp.copy()
+
+    # on-pulse mean and std
+    onp_mean = np.mean(data)
+    onp_std = np.std(data)
+    print(f"On-pulse mean: {onp_mean:.5f}")
+    print(f"On-pulse std: {onp_std:.5f}")
+
+    # off-pulse mean and std
+    offp_mean = np.mean(offp)
+    offp_std = np.std(offp)
+    print(f"Off-pulse mean: {offp_mean:.5f}")
+    print(f"Off-pulse std: {offp_std:.5f}")
 
     coords = {"component": np.arange(2), "obs_id": np.arange(len(data))}
 
@@ -68,12 +83,12 @@ def normal_lognormal(t_data):
         # priors
         mu = pm.Normal(
             "mu",
-            mu=np.array([0.0, np.log(1.0)]),
-            sigma=np.array([1.0, 1.0]),
+            mu=np.array([offp_mean, np.log(onp_mean)]),
+            sigma=np.array([offp_std, 1.0]),
             dims="component",
         )
         sigma = pm.HalfNormal(
-            "sigma", sigma=np.array([1.0, np.log(1.75)]), dims="component"
+            "sigma", sigma=np.array([offp_std, np.log(1.75)]), dims="component"
         )
 
         # 1) normal distribution for nulling

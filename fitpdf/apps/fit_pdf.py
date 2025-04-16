@@ -183,7 +183,7 @@ def fit_pe_dist(t_data, t_offp, params):
     data = t_data.copy()
     offp = t_offp.copy()
 
-    model = fmodels.normal_lognormal(data)
+    model = fmodels.normal_lognormal(data, offp)
 
     print(f"All RVs: {model.basic_RVs}")
     print(f"Free RVs: {model.free_RVs}")
@@ -197,6 +197,28 @@ def fit_pe_dist(t_data, t_offp, params):
     print(az.summary(idata))
     plot_chains(idata, params)
     plot_corner(idata, params)
+
+    # compute prior predictive samples
+    with model:
+        pp = pm.sample_prior_predictive(var_names=["obs"])
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    bins = np.linspace(data.min(), data.max(), num=70)
+
+    ax.hist(
+        pp.prior_predictive["obs"].values.reshape(-1),
+        bins=bins,
+        color="black",
+        density=True,
+        histtype="step",
+        lw=2,
+    )
+
+    ax.set_yscale("log")
+
+    fig.tight_layout()
 
     # compute posterior predictive samples
     thinned_idata = idata.sel(draw=slice(None, None, 20))
