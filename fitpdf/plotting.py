@@ -294,3 +294,85 @@ def plot_fit(idata, offp, params):
         )
 
         plt.close(fig)
+
+
+def plot_prior_predictive(idata, t_data, t_offp, params):
+    """
+    Plot the prior predictive samples.
+
+    Parameters
+    ----------
+    idata: ~az.InterferenceData
+        The input data.
+    offp: ~pd.DataFrame
+        The off-pulse data.
+    params: dict
+        Additional parameters that influence the processing.
+    """
+
+    data = t_data.copy()
+    offp = t_offp.copy()
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    bins = np.linspace(data.min(), data.max(), num=params["nbin"])
+
+    # data
+    if params["labels"] is None:
+        label = "on"
+    else:
+        label = params["labels"][0]
+
+    ax.hist(
+        data,
+        bins=bins,
+        color="black",
+        density=True,
+        histtype="step",
+        label=label,
+        lw=2,
+        zorder=4,
+    )
+
+    # off-pulse
+    ax.hist(
+        offp,
+        bins=params["nbin"],
+        color="dimgrey",
+        density=True,
+        histtype="stepfilled",
+        linewidth=2,
+        label="off",
+        zorder=3,
+        alpha=0.4,
+    )
+
+    # prior predictive samples
+    ax.hist(
+        idata.prior_predictive["obs"].values.reshape(-1),
+        bins=bins,
+        color="C1",
+        density=True,
+        histtype="step",
+        label="prior predictive",
+        lw=2,
+        zorder=5,
+    )
+
+    ax.legend(loc="best", frameon=False)
+    ax.set_xlabel(r"$F \: / \: \left< F_\mathrm{on} \right>$")
+    ax.set_ylabel("PDF")
+    ax.set_yscale("log")
+
+    fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "prior_predictive.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)

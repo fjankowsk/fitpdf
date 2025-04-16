@@ -29,7 +29,7 @@ from spanalysis.general_helpers import (
     signal_handler,
 )
 import fitpdf.models as fmodels
-from fitpdf.plotting import plot_chains, plot_corner, plot_fit
+from fitpdf.plotting import plot_chains, plot_corner, plot_fit, plot_prior_predictive
 
 
 def parse_args():
@@ -207,23 +207,9 @@ def fit_pe_dist(t_data, t_offp, params):
     with model:
         pp = pm.sample_prior_predictive(var_names=["obs"])
 
-    fig = plt.figure()
-    ax = fig.add_subplot()
+    assert hasattr(pp, "prior_predictive")
 
-    bins = np.linspace(data.min(), data.max(), num=70)
-
-    ax.hist(
-        pp.prior_predictive["obs"].values.reshape(-1),
-        bins=bins,
-        color="black",
-        density=True,
-        histtype="step",
-        lw=2,
-    )
-
-    ax.set_yscale("log")
-
-    fig.tight_layout()
+    plot_prior_predictive(pp, data, offp, params)
 
     # compute posterior predictive samples
     thinned_idata = idata.sel(draw=slice(None, None, 20))
