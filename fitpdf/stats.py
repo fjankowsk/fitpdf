@@ -1,5 +1,6 @@
 #
-# Statistics related helper functions.
+#   2025 Fabian Jankowski
+#   Statistics related helper functions.
 #
 
 import numpy as np

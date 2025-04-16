@@ -1,5 +1,6 @@
 #
-#
+#   2025 Fabian Jankowski
+#   Distribution models.
 #
 
 import numpy as np

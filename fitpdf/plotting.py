@@ -1,5 +1,6 @@
 #
-# Plotting related helper functions.
+#   2025 Fabian Jankowski
+#   Plotting related helper functions.
 #
 
 import arviz as az

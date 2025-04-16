@@ -1,3 +1,8 @@
+#
+#   2025 Fabian Jankowski
+#   Fit measured distribution data.
+#
+
 import argparse
 import logging
 import os
