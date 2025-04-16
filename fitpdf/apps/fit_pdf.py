@@ -55,6 +55,14 @@ def parse_args():
     )
 
     parser.add_argument(
+        "--fast",
+        dest="fast",
+        action="store_true",
+        default=False,
+        help="Enable fast processing. This reduces the number of MCMC steps drastically.",
+    )
+
+    parser.add_argument(
         "--labels",
         dest="labels",
         type=str,
@@ -195,8 +203,13 @@ def fit_pe_dist(t_data, t_offp, params):
     print(f"Observed RVs: {model.observed_RVs}")
     print(f"Initial point: {model.initial_point()}")
 
+    if params["fast"]:
+        draws = 700
+    else:
+        draws = 10000
+
     with model:
-        idata = pm.sample(draws=10000, chains=4, init="advi+adapt_diag")
+        idata = pm.sample(draws=draws, chains=4, init="advi+adapt_diag")
         pm.compute_log_likelihood(idata)
 
     print(az.summary(idata))
@@ -407,6 +420,7 @@ def main():
     params = {
         "ccdf": args.ccdf,
         "dpi": 300,
+        "fast": args.fast,
         "labels": args.labels,
         "log": args.log,
         "mean": args.mean,
