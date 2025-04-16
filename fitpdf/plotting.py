@@ -22,6 +22,13 @@ from fitpdf.stats import get_adaptive_bandwidth
 def plot_chains(idata, params):
     """
     Plot the chains.
+
+    Parameters
+    ----------
+    idata: ~az.InterferenceData
+        The input data.
+    params: dict
+        Additional parameters that influence the processing.
     """
 
     az.plot_trace(idata)
@@ -43,6 +50,13 @@ def plot_chains(idata, params):
 def plot_corner(idata, params):
     """
     Make a corner plot.
+
+    Parameters
+    ----------
+    idata: ~az.InterferenceData
+        The input data.
+    params: dict
+        Additional parameters that influence the processing.
     """
 
     # get maximum likelihood values
@@ -102,6 +116,15 @@ def plot_corner(idata, params):
 def plot_fit(idata, offp, params):
     """
     Plot the distribution fit.
+
+    Parameters
+    ----------
+    idata: ~az.InterferenceData
+        The input data.
+    offp: ~pd.DataFrame
+        The off-pulse data.
+    params: dict
+        Additional parameters that influence the processing.
     """
 
     obs_data = np.sort(idata.observed_data["obs"].values)

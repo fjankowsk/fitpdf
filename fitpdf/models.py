@@ -7,9 +7,16 @@ import numpy as np
 import pymc as pm
 
 
-def normal_normal(t_data):
+def normal_normal(t_data, t_offp):
     """
     Construct a normal - normal mixture model.
+
+    Parameters
+    ----------
+    t_data: ~np.array of float
+        The input data to be fit.
+    t_offp: ~np.array of float
+        The off-pulse data.
 
     Returns
     -------
@@ -18,6 +25,7 @@ def normal_normal(t_data):
     """
 
     data = t_data.copy()
+    offp = t_offp.copy()
 
     with pm.Model() as model:
         # mixture weights
@@ -129,9 +137,16 @@ def normal_lognormal_analytic_pdf(x, w, mu, sigma, icomp):
     return pdf.eval()
 
 
-def lognormal_lognormal(t_data):
+def lognormal_lognormal(t_data, t_offp):
     """
     Construct a lognormal - lognormal mixture model.
+
+    Parameters
+    ----------
+    t_data: ~np.array of float
+        The input data to be fit.
+    t_offp: ~np.array of float
+        The off-pulse data.
 
     Returns
     -------
@@ -140,6 +155,7 @@ def lognormal_lognormal(t_data):
     """
 
     data = t_data.copy()
+    offp = t_offp.copy()
 
     with pm.Model() as model:
         # mixture weights
