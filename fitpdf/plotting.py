@@ -113,6 +113,46 @@ def plot_corner(idata, params):
     matplotlib.rcParams["font.size"] = fontsize_before
 
 
+def plot_adaptive_bandwidths(t_data, t_bandwidths):
+    """
+    Visualise the KDE adaptive bandwidths.
+
+    Parameters
+    ----------
+    t_data: ~np.array of float
+        The input data of the KDE.
+    t_bandwidths: ~np.array of float
+        The adaptive KDE bandwidths for each data point.
+    """
+
+    data = t_data.copy()
+    bandwidths = t_bandwidths.copy()
+
+    ys = np.arange(len(data)) / len(data)
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    ax.scatter(data, ys, marker="+", color="black", label="data", zorder=5)
+
+    ax.errorbar(
+        x=data,
+        y=ys,
+        xerr=bandwidths,
+        color="C1",
+        elinewidth=0.5,
+        label="bandwidth",
+        linestyle="none",
+        marker=".",
+        zorder=4,
+    )
+
+    ax.legend(loc="best", frameon=False)
+    ax.set_xlabel("Value")
+
+    fig.tight_layout()
+
+
 def plot_fit(idata, offp, params):
     """
     Plot the distribution fit.
@@ -142,6 +182,7 @@ def plot_fit(idata, offp, params):
 
     bandwidths = get_adaptive_bandwidth(obs_data, min_bw=min_bw_data)
     print(f"Bandwidths: {bandwidths}")
+    plot_adaptive_bandwidths(obs_data, bandwidths)
 
     kde_x_data, kde_y_data = (
         TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
