@@ -280,7 +280,7 @@ def plot_fit(idata, offp, params):
         ax.plot(
             kde_x_data,
             kde_y,
-            color="C0",
+            color="firebrick",
             lw=0.5,
             zorder=3.5,
             alpha=0.1,
