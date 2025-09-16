@@ -28,6 +28,7 @@ from spanalysis.general_helpers import (
     customise_matplotlib_format,
     signal_handler,
 )
+from spanalysis.apps.plot_dist import plot_pe_dist
 import fitpdf.models as fmodels
 from fitpdf.plotting import plot_chains, plot_corner, plot_fit, plot_prior_predictive
 
@@ -240,164 +241,6 @@ def fit_pe_dist(t_data, t_offp, params):
     # fmodels.normal_lognormal_mode(idata.posterior["mu"], idata.posterior["sigma"])
 
 
-def plot_pe_dist(dfs, params):
-    """
-    Plot pulse-energy distributions.
-
-    Parameters
-    ----------
-    dfs: list of ~pd.DataFrame
-        The input data.
-    params: dict
-        Additional parameters that influence the plotting.
-    """
-
-    log = logging.getLogger("fitpdf.fit_pdf")
-
-    fig = plt.figure()
-    ax = fig.add_subplot()
-
-    min_density = 1.0e9
-
-    for i, df in enumerate(dfs):
-        # use only the good data
-        mask_zapped = df["zapped"].astype(bool)
-        mask_good = np.logical_not(mask_zapped)
-
-        data = (df["fluence_on"] / df["nbin_on"]).to_numpy()
-        log.info(f"File, size data: {i}, {data.size}")
-
-        mask = (
-            mask_good
-            & np.isfinite(data)
-            & (data / params["mean"] > params["mean_thresh"])
-        )
-        data = data[mask]
-        data = np.sort(data)
-        log.info(f"File, size good-only: {i}, {data.size}")
-
-        print(
-            "File, data mean, median, number of samples: {0}, {1:.5f}, {2:.5f}, {3}".format(
-                i, np.mean(data), np.median(data), len(data)
-            )
-        )
-
-        if params["labels"] is None:
-            label = f"{i}"
-        else:
-            label = params["labels"][i]
-
-        if params["log"]:
-            bins = np.geomspace(
-                0.1, np.max(data / params["mean"]) + 0.1, num=params["nbin"]
-            )
-        else:
-            bins = params["nbin"]
-
-        if params["ccdf"]:
-            cumulative = -1
-        else:
-            cumulative = False
-
-        # make the first dist always black
-        if i == 0:
-            color = "black"
-        else:
-            color = f"C{i - 1}"
-
-        # on-pulse
-        _density, _, _ = ax.hist(
-            data / params["mean"],
-            bins=bins,
-            color=color,
-            density=True,
-            cumulative=cumulative,
-            histtype="step",
-            linewidth=2,
-            label=label,
-        )
-        _mask = np.isfinite(_density) & (_density > 0)
-        if np.min(_density[_mask]) < min_density:
-            min_density = np.min(_density[_mask])
-
-        # rug plot
-        # use data coordinates in horizontal and axis coordinates in vertical direction
-        trans = transforms.blended_transform_factory(ax.transData, ax.transAxes)
-        ax.scatter(
-            data / params["mean"],
-            [0.99 for _ in range(len(data))],
-            marker="|",
-            color=color,
-            lw=0.8,
-            transform=trans,
-            alpha=0.3,
-        )
-
-        # show the off-pulse fluence only for the first entry
-        if i == 0:
-            # off-pulse
-            offp = (df["fluence_off"] / df["nbin_off"]).to_numpy()
-            mask = (
-                mask_good
-                & np.isfinite(offp)
-                & (offp / params["mean"] > params["mean_thresh"])
-            )
-            offp = offp[mask]
-            offp = np.sort(offp)
-
-            if params["log"]:
-                bins = np.geomspace(
-                    0.1, np.max(offp / params["mean"]) + 0.1, num=params["nbin"]
-                )
-            else:
-                bins = params["nbin"]
-
-            ax.hist(
-                offp / params["mean"],
-                bins=bins,
-                color="dimgrey",
-                density=True,
-                cumulative=cumulative,
-                histtype="stepfilled",
-                linewidth=2,
-                label="off",
-                zorder=3,
-                alpha=0.4,
-            )
-
-    # fit data
-    fit_pe_dist(data / params["mean"], offp / params["mean"], params)
-
-    ax.legend(loc="best", frameon=False)
-    if params["title"] is not None:
-        ax.set_title(params["title"])
-    ax.set_xlabel(r"$F \: / \: \left< F_\mathrm{on} \right>$")
-    if params["ccdf"]:
-        ylabel = "CCDF"
-    else:
-        ylabel = "PDF"
-    ax.set_ylabel(ylabel)
-    ax.set_yscale("log")
-
-    if params["log"]:
-        ax.set_xscale("log")
-
-    # set ylim to the density corresponding to one bin count
-    ax.set_ylim(bottom=0.7 * min_density)
-
-    fig.tight_layout()
-
-    # output plot to file
-    if params["output"]:
-        fig.savefig(
-            "pedist_pdf.pdf",
-            bbox_inches="tight",
-            dpi=params["dpi"],
-        )
-
-        plt.close(fig)
-
-
 #
 # MAIN
 #
@@ -442,7 +285,9 @@ def main():
         df["filename"] = item
         dfs.append(df)
 
-    plot_pe_dist(dfs, params)
+    _data, _offp = plot_pe_dist(dfs, params)
+
+    fit_pe_dist(_data / params["mean"], _offp / params["mean"], params)
 
     plt.show()
 
