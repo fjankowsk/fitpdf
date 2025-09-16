@@ -236,6 +236,9 @@ def fit_pe_dist(t_data, t_offp, params):
 
     plot_fit(idata, offp, params)
 
+    # output the modes of each component
+    # fmodels.normal_lognormal_mode(idata.posterior["mu"], idata.posterior["sigma"])
+
 
 def plot_pe_dist(dfs, params):
     """

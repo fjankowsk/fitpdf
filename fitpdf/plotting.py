@@ -189,7 +189,7 @@ def plot_fit(idata, offp, params):
     isj_bw_data = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
     print(f"ISJ kernel bandwidth data: {isj_bw_data:.5f}")
 
-    min_bw_data = 7.0 * isj_bw_data
+    min_bw_data = 5.0 * isj_bw_data
     print(f"Minimum bandwidth data: {min_bw_data:.5f}")
 
     bandwidths = get_adaptive_bandwidth(obs_data, min_bw=min_bw_data)
@@ -223,7 +223,7 @@ def plot_fit(idata, offp, params):
 
     # off pulse
     _isj_bw = improved_sheather_jones(offp.reshape(offp.shape[0], -1))
-    _bandwidths = get_adaptive_bandwidth(offp, min_bw=10.0 * _isj_bw)
+    _bandwidths = get_adaptive_bandwidth(offp, min_bw=5.0 * _isj_bw)
     kde_x, kde_y = TreeKDE(kernel="gaussian", bw=_bandwidths).fit(offp).evaluate()
 
     ax.fill_between(
@@ -297,7 +297,7 @@ def plot_fit(idata, offp, params):
         dims="plot",
     )
 
-    for i in range(2):
+    for i in range(3):
         ana_full = xr.apply_ufunc(
             fmodels.normal_lognormal_analytic_pdf,
             plot_range,
