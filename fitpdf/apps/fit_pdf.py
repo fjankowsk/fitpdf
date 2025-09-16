@@ -87,7 +87,7 @@ def parse_args():
         dest="mean_thresh",
         type=float,
         metavar=("value"),
-        default=-1.0,
+        default=-3.0,
         help="Ignore fluence data below this mean fluence threshold, i.e. select only data where fluence / mean > meanthresh.",
     )
 
