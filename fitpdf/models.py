@@ -37,7 +37,6 @@ def normal_normal(t_data, t_offp):
 
         # 1) normal distribution for nulling
         # 2) normal distribution for pulses
-
         components = pm.Normal.dist(
             mu=mu,
             sigma=sigma,

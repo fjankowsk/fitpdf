@@ -18,8 +18,6 @@ if "DISPLAY" not in os.environ:
     # set a rendering backend that does not require an X server
     matplotlib.use("Agg")
 import matplotlib.pyplot as plt
-import matplotlib.transforms as transforms
-import numpy as np
 import pandas as pd
 import pymc as pm
 
