@@ -1,3 +1,56 @@
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools", "wheel"]
 build-backend = "setuptools.build_meta"
+
+[tool.cibuildwheel]
+build-frontend = "build"
+
+[tool.setuptools]
+zip-safe = false
+
+[project]
+name = "fitpdf"
+dynamic = ["version"]
+dependencies = [
+    "arviz",
+    "corner",
+    "KDEpy",
+    "matplotlib",
+    "numpy",
+    "pandas",
+    "pymc",
+    "scipy",
+    "xarray",
+]
+authors = [
+  { name="Fabian Jankowski", email="fjankowsk@gmail.com" }
+]
+maintainers = [
+  { name="Fabian Jankowski", email="fjankowsk@gmail.com" }
+]
+description = "Distribution fitting tools."
+readme = "README.md"
+requires-python = ">=3.9"
+keywords = ["distribution", "fitting", "data-analysis"]
+classifiers = [
+  "Development Status :: 5 - Production/Stable",
+  "Programming Language :: Python :: 3",
+  "Operating System :: OS Independent",
+]
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+
+[project.optional-dependencies]
+develop = [
+  "black",
+  "build",
+  "twine",
+]
+
+[project.scripts]
+fitpdf-fit = "fitpdf.apps.fit_pdf:main"
+
+[project.urls]
+Homepage = "https://github.com/fjankowsk/fitpdf"
+Issues = "https://github.com/fjankowsk/fitpdf/issues"
+Repository = "https://github.com/fjankowsk/fitpdf.git"
