@@ -89,6 +89,14 @@ def parse_args():
         help="Ignore fluence data below this mean fluence threshold, i.e. select only data where fluence / mean > meanthresh.",
     )
 
+    parser.add_argument(
+        "--model",
+        dest="model",
+        choices=["normal", "lognormal" "normal_lognormal"],
+        default="normal_lognormal",
+        help="Use the specified distribution model.",
+    )
+
     # options that affect the output formatting
     output = parser.add_argument_group(title="Output formatting")
 
@@ -195,7 +203,16 @@ def fit_pe_dist(t_data, t_offp, params):
     data = t_data.copy()
     offp = t_offp.copy()
 
-    mobj = fmodels.NormalLognormal()
+    # model selection
+    if params["model"] == "normal":
+        mobj = fmodels.Normal()
+    elif params["model"] == "lognormal":
+        mobj = fmodels.Lognormal()
+    elif params["model"] == "normal_lognormal":
+        mobj = fmodels.NormalLognormal()
+    else:
+        raise NotImplementedError("Model not implemented: %s", params["model"])
+
     model = mobj.get_model(data, offp)
 
     print(f"All RVs: {model.basic_RVs}")
@@ -270,6 +287,7 @@ def main():
         "log": args.log,
         "mean": args.mean,
         "mean_thresh": args.mean_thresh,
+        "model": args.model,
         "nbin": args.nbin,
         "output": args.output,
         "publish": False,
