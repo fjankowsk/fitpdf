@@ -21,6 +21,8 @@ class NormalLognormal(Model):
 
         self.__log = logging.getLogger("fitpdf.models")
 
+        self.ncomp = 3
+
     def __repr__(self):
         """
         Representation of the object.

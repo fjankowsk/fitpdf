@@ -298,7 +298,9 @@ def plot_fit(mobj, idata, offp, params):
         dims="plot",
     )
 
-    for i in range(3):
+    assert hasattr(mobj, "ncomp")
+
+    for i in range(mobj.ncomp):
         ana_full = xr.apply_ufunc(
             mobj.get_analytic_pdf,
             plot_range,

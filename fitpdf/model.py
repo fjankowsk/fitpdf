@@ -16,6 +16,8 @@ class Model(object):
 
         self.__log = logging.getLogger("fitpdf.models")
 
+        self.ncomp = None
+
     def __repr__(self):
         """
         Representation of the object.
