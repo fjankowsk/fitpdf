@@ -3,6 +3,6 @@
 #   Distribution models.
 #
 
-from normal import Normal
-from lognormal import Lognormal
-from normal_lognormal import NormalLognormal
+from fitpdf.normal import Normal
+from fitpdf.lognormal import Lognormal
+from fitpdf.normal_lognormal import NormalLognormal
