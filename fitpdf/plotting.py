@@ -15,7 +15,6 @@ from scipy import integrate
 from scipy import stats
 import xarray as xr
 
-import fitpdf.models as fmodels
 from fitpdf.stats import get_adaptive_bandwidth
 
 
@@ -165,12 +164,14 @@ def plot_adaptive_bandwidths(t_data, t_bandwidths, params):
         plt.close(fig)
 
 
-def plot_fit(idata, offp, params):
+def plot_fit(mobj, idata, offp, params):
     """
     Plot the distribution fit.
 
     Parameters
     ----------
+    mobj: ~fitpdf.models.Model
+        Model object.
     idata: ~az.InterferenceData
         The input data.
     offp: ~pd.DataFrame
@@ -299,7 +300,7 @@ def plot_fit(idata, offp, params):
 
     for i in range(3):
         ana_full = xr.apply_ufunc(
-            fmodels.normal_lognormal_analytic_pdf,
+            mobj.get_analytic_pdf,
             plot_range,
             idata.posterior["w"],
             idata.posterior["mu"],

@@ -27,7 +27,7 @@ from spanalysis.general_helpers import (
     signal_handler,
 )
 from spanalysis.apps.plot_dist import plot_pe_dist
-import fitpdf.models as fmodels
+from fitpdf.normal_lognormal import NormalLognormal
 from fitpdf.plotting import plot_chains, plot_corner, plot_fit, plot_prior_predictive
 
 
@@ -195,7 +195,8 @@ def fit_pe_dist(t_data, t_offp, params):
     data = t_data.copy()
     offp = t_offp.copy()
 
-    model = fmodels.normal_lognormal(data, offp)
+    mobj = NormalLognormal()
+    model = mobj.get_model(data, offp)
 
     print(f"All RVs: {model.basic_RVs}")
     print(f"Free RVs: {model.free_RVs}")
@@ -233,10 +234,10 @@ def fit_pe_dist(t_data, t_offp, params):
 
     assert hasattr(idata, "posterior_predictive")
 
-    plot_fit(idata, offp, params)
+    plot_fit(mobj, idata, offp, params)
 
     # output the modes of each component
-    # fmodels.normal_lognormal_mode(idata.posterior["mu"], idata.posterior["sigma"])
+    # mobj.get_mode(idata.posterior["mu"], idata.posterior["sigma"])
 
 
 #
