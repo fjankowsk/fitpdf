@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import pymc as pm
 
-from fitpdf.models import Model
+from fitpdf.model import Model
 
 
 class Normal(Model):

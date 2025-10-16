@@ -1,18 +1,13 @@
 #
 #   2025 Fabian Jankowski
-#   Lognormal mixture models.
+#   Distribution model template.
 #
 
 import logging
 
-import numpy as np
-import pymc as pm
 
-from fitpdf.model import Model
-
-
-class Lognormal(Model):
-    name = "Lognormal - lognormal"
+class Model(object):
+    name = "model"
 
     def __init__(self):
         """
@@ -57,29 +52,7 @@ class Lognormal(Model):
         model: ~pm.Model
             A mixture model.
         """
-
-        data = t_data.copy()
-        offp = t_offp.copy()
-
-        with pm.Model() as model:
-            # mixture weights
-            w = pm.Dirichlet("w", a=np.array([1, 1]))
-
-            # priors
-            mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1)
-            sigma = pm.HalfNormal("sigma", sigma=np.array([1, 1]))
-
-            # 1) lognormal distribution
-            lognorm1 = pm.Lognormal.dist(mu=mu[0], sigma=sigma[0])
-
-            # 2) lognormal distribution
-            lognorm2 = pm.Lognormal.dist(mu=mu[1], sigma=sigma[1])
-
-            components = [lognorm1, lognorm2]
-
-            pm.Mixture("obs", w=w, comp_dists=components, observed=data)
-
-        return model
+        pass
 
     def get_analytic_pdf(self, x, w, mu, sigma, icomp):
         """

@@ -27,7 +27,7 @@ from spanalysis.general_helpers import (
     signal_handler,
 )
 from spanalysis.apps.plot_dist import plot_pe_dist
-from fitpdf.normal_lognormal import NormalLognormal
+import fitpdf.models as fmodels
 from fitpdf.plotting import plot_chains, plot_corner, plot_fit, plot_prior_predictive
 
 
@@ -195,7 +195,7 @@ def fit_pe_dist(t_data, t_offp, params):
     data = t_data.copy()
     offp = t_offp.copy()
 
-    mobj = NormalLognormal()
+    mobj = fmodels.NormalLognormal()
     model = mobj.get_model(data, offp)
 
     print(f"All RVs: {model.basic_RVs}")
