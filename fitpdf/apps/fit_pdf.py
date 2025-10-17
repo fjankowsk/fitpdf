@@ -254,23 +254,32 @@ def fit_pe_dist(t_data, t_offp, params):
 
     plot_fit(mobj, idata, offp, params)
 
-    # output the modes of each component
-    print("Modes")
+    # output the fit parameters
+    print("\nFit parameters")
     for icomp in range(mobj.ncomp):
+        # weight
+        _samples = idata.posterior["w"]
+        quantiles = _samples.sel(component=icomp).quantile(
+            q=[0.16, 0.5, 0.84], dim=("chain", "draw")
+        )
+        error = np.maximum(
+            np.abs(quantiles[1] - quantiles[0]), np.abs(quantiles[2] - quantiles[1])
+        )
+        weight = {"value": quantiles[1], "error": error}
+
+        # mode
         _samples = mobj.get_mode(idata.posterior["mu"], idata.posterior["sigma"], icomp)
         quantiles = _samples.sel(component=icomp).quantile(
             q=[0.16, 0.5, 0.84], dim=("chain", "draw")
         )
-
         error = np.maximum(
             np.abs(quantiles[1] - quantiles[0]), np.abs(quantiles[2] - quantiles[1])
         )
-
         mode = {"value": quantiles[1], "error": error}
 
         print(
-            "Component {0}: {1:.3f} +- {2:.3f}".format(
-                icomp, mode["value"], mode["error"]
+            "Component {0}: {1:.3f} +- {2:.3f}, {3:.3f} +- {4:.3f}".format(
+                icomp, weight["value"], weight["error"], mode["value"], mode["error"]
             )
         )
 
