@@ -18,6 +18,7 @@ if "DISPLAY" not in os.environ:
     # set a rendering backend that does not require an X server
     matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+import numpy as np
 import pandas as pd
 import pymc as pm
 
@@ -257,9 +258,21 @@ def fit_pe_dist(t_data, t_offp, params):
     print("Modes")
     for icomp in range(mobj.ncomp):
         _samples = mobj.get_mode(idata.posterior["mu"], idata.posterior["sigma"], icomp)
-        mode = _samples.sel(component=icomp).mean(dim=("chain", "draw"))
+        quantiles = _samples.sel(component=icomp).quantile(
+            q=[0.16, 0.5, 0.84], dim=("chain", "draw")
+        )
 
-        print("Component {0}: {1:.3f}".format(icomp, mode))
+        error = np.maximum(
+            np.abs(quantiles[1] - quantiles[0]), np.abs(quantiles[2] - quantiles[1])
+        )
+
+        mode = {"value": quantiles[1], "error": error}
+
+        print(
+            "Component {0}: {1:.3f} +- {2:.3f}".format(
+                icomp, mode["value"], mode["error"]
+            )
+        )
 
 
 #
