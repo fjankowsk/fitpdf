@@ -92,7 +92,7 @@ def parse_args():
     parser.add_argument(
         "--model",
         dest="model",
-        choices=["normal", "lognormal" "normal_lognormal"],
+        choices=["normal", "lognormal", "normal_lognormal"],
         default="normal_lognormal",
         help="Use the specified distribution model.",
     )
