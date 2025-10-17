@@ -10,6 +10,14 @@ This repository contains software to fit complex distribution models to observat
 
 The software is primarily developed and maintained by Fabian Jankowski. For more information, feel free to contact me via: fabian.jankowski at cnrs-orleans.fr.
 
+## Paper ##
+
+The corresponding paper is currently in preparation.
+
+## Citation ##
+
+If you make use of the software, please add a link to this repository and cite our corresponding paper. See above and the CITATION and CITATION.bib files.
+
 ## Installation ##
 
 The easiest and recommended way to install the software is via the Python command `pip` directly from the `fitpdf` GitHub software repository. For instance, to install the master branch of the code, use the following command:  
