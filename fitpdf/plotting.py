@@ -300,22 +300,22 @@ def plot_fit(mobj, idata, offp, params):
 
     assert hasattr(mobj, "ncomp")
 
-    for i in range(mobj.ncomp):
-        ana_full = xr.apply_ufunc(
+    # plot component pdfs
+    print("Areas")
+    for icomp in range(mobj.ncomp):
+        _ana_full = xr.apply_ufunc(
             mobj.get_analytic_pdf,
             plot_range,
             idata.posterior["w"],
             idata.posterior["mu"],
             idata.posterior["sigma"],
-            i,
+            icomp,
         )
-        pdf = ana_full.sel(component=i).mean(dim=("chain", "draw"))
+        _pdf = _ana_full.sel(component=icomp).mean(dim=("chain", "draw"))
+        _area = integrate.trapezoid(_pdf, x=plot_range)
+        print(f"Component {icomp}: {_area:.3f}")
 
-        print(
-            "Component {0}: {1:.3f}".format(i, integrate.trapezoid(pdf, x=plot_range))
-        )
-
-        ax.plot(plot_range, pdf, label=f"c{i}", lw=1, zorder=6)
+        ax.plot(plot_range, _pdf, label=f"c{icomp}", lw=1, zorder=6)
 
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:
