@@ -64,5 +64,5 @@ def signal_handler(signum, frame):
 
     # treat SIGINT/INT/CRTL-C
     if signum == signal.SIGINT:
-        log.warn("SIGINT received, stopping the program.")
+        log.warning("SIGINT received, stopping the program.")
         sys.exit(1)
