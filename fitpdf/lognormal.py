@@ -92,7 +92,15 @@ class Lognormal(Model):
         pdf: ~np.array of float
             The model PDF evaluated at the `x` values.
         """
-        pass
+
+        if icomp in [0, 1]:
+            dist = pm.Lognormal.dist(mu=mu, sigma=sigma)
+        else:
+            raise NotImplementedError(f"Component not implemented: {icomp}")
+
+        pdf = w[icomp] * pm.logp(dist, x).exp()
+
+        return pdf.eval()
 
     def get_mode(self, mu, sigma, icomp):
         """
@@ -103,4 +111,10 @@ class Lognormal(Model):
         mode: ~np.array of float
             The mode of the model component.
         """
-        pass
+
+        if icomp in [0, 1]:
+            mode = np.exp(mu - np.power(sigma, 2))
+        else:
+            raise NotImplementedError(f"Component not implemented: {icomp}")
+
+        return mode
