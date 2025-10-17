@@ -11,7 +11,6 @@ import matplotlib.transforms as transforms
 import numpy as np
 from KDEpy import FFTKDE, TreeKDE
 from KDEpy.bw_selection import improved_sheather_jones
-from scipy import integrate
 from scipy import stats
 import xarray as xr
 
@@ -301,7 +300,6 @@ def plot_fit(mobj, idata, offp, params):
     assert hasattr(mobj, "ncomp")
 
     # plot component pdfs
-    print("Areas")
     for icomp in range(mobj.ncomp):
         _ana_full = xr.apply_ufunc(
             mobj.get_analytic_pdf,
@@ -312,8 +310,6 @@ def plot_fit(mobj, idata, offp, params):
             icomp,
         )
         _pdf = _ana_full.sel(component=icomp).mean(dim=("chain", "draw"))
-        _area = integrate.trapezoid(_pdf, x=plot_range)
-        print(f"Component {icomp}: {_area:.3f}")
 
         ax.plot(plot_range, _pdf, label=f"c{icomp}", lw=1, zorder=6)
 
