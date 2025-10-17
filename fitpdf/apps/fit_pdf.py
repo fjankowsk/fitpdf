@@ -21,7 +21,7 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import pymc as pm
 
-from spanalysis.general_helpers import (
+from fitpdf.general_helpers import (
     configure_logging,
     customise_matplotlib_format,
     signal_handler,
