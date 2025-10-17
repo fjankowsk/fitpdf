@@ -31,7 +31,7 @@ maintainers = [
 description = "Distribution fitting tools."
 readme = "README.md"
 requires-python = ">=3.9"
-keywords = ["distribution", "fitting", "data-analysis"]
+keywords = ["distributions", "fitting", "fitting-distributions", "data-analysis", "astrophysics", "pulsars", "fast-radio-bursts", "python"]
 classifiers = [
   "Development Status :: 5 - Production/Stable",
   "Programming Language :: Python :: 3",

@@ -12,9 +12,14 @@ help:
 	@echo 'make clean           remove temporary files'
 	@echo 'make install         install the package locally'
 	@echo 'make uninstall       uninstall the package'
+	@echo 'make upload          upload the distribution to PyPI'
+	@echo 'make uploadtest      upload the distribution to TestPyPI'
 
 black:
 	${BLK} *.py */*.py */*/*.py
+
+build:
+	python3 -m build
 
 clean:
 	rm -f ${SRCDIR}/*.pyc
@@ -34,4 +39,14 @@ install:
 uninstall:
 	${PIP} uninstall --yes fitpdf
 
-.PHONY: help black clean install uninstall
+upload:
+	${MAKE} clean
+	${MAKE} build
+	python3 -m twine upload dist/*
+
+uploadtest:
+	${MAKE} clean
+	${MAKE} build
+	python3 -m twine upload --repository testpypi dist/*
+
+.PHONY: help black build clean install uninstall upload uploadtest
