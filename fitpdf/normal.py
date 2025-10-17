@@ -127,7 +127,7 @@ class Normal(Model):
         Returns
         -------
         modes: ~np.array of float
-            The model PDF evaluated at the `x` values.
+            The mode of the model component.
         """
 
         if icomp in [0, 1]:
@@ -135,4 +135,4 @@ class Normal(Model):
         else:
             raise NotImplementedError(f"Component not implemented: {icomp}")
 
-        return mode.eval()
+        return mode

@@ -254,7 +254,12 @@ def fit_pe_dist(t_data, t_offp, params):
     plot_fit(mobj, idata, offp, params)
 
     # output the modes of each component
-    # mobj.get_mode(idata.posterior["mu"], idata.posterior["sigma"])
+    print("Modes")
+    for icomp in range(mobj.ncomp):
+        _samples = mobj.get_mode(idata.posterior["mu"], idata.posterior["sigma"], icomp)
+        mode = _samples.sel(component=icomp).mean(dim=("chain", "draw"))
+
+        print("Component {0}: {1:.3f}".format(icomp, mode))
 
 
 #

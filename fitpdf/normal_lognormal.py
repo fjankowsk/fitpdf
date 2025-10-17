@@ -121,9 +121,7 @@ class NormalLognormal(Model):
             The model PDF evaluated at the `x` values.
         """
 
-        if icomp == 0:
-            dist = pm.Normal.dist(mu=mu, sigma=sigma)
-        elif icomp == 1:
+        if icomp in [0, 1]:
             dist = pm.Normal.dist(mu=mu, sigma=sigma)
         elif icomp == 2:
             dist = pm.Lognormal.dist(mu=mu, sigma=sigma)
@@ -141,14 +139,14 @@ class NormalLognormal(Model):
         Returns
         -------
         mode: ~np.array of float
-            The model PDF evaluated at the `x` values.
+            The mode of the model component.
         """
 
         if icomp in [0, 1]:
             mode = mu
         elif icomp == 2:
-            mode = pm.math.exp(mu - sigma**2)
+            mode = np.exp(mu - np.power(sigma, 2))
         else:
             raise NotImplementedError(f"Component not implemented: {icomp}")
 
-        return mode.eval()
+        return mode
