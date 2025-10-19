@@ -8,7 +8,7 @@ import logging
 import numpy as np
 import pymc as pm
 
-from fitpdf.model import Model
+from fitpdf.models.model import Model
 
 
 class Lognormal(Model):
