@@ -47,7 +47,7 @@ Output formatting:
 
 ```console
 $ fitpdf-fit -h
-usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {LL,NN,NNL}] [--ccdf] [--log] [--nbin value] [-o] [--title text] files [files ...]
+usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {NL,NN,NNL}] [--ccdf] [--log] [--nbin value] [-o] [--title text] files [files ...]
 
 Fit distribution data.
 
@@ -61,7 +61,7 @@ options:
                         The labels to use for each input file. (default: None)
   --mean value          The global mean fluence to divide the histograms by. (default: 1.0)
   --meanthresh value    Ignore fluence data below this mean fluence threshold, i.e. select only data where fluence / mean > meanthresh. (default: -3.0)
-  --model {LL,NN,NNL}   Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.
+  --model {NL,NN,NNL}   Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.
                         (default: NNL)
   --title text          Set a custom figure title. (default: None)
 
