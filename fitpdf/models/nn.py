@@ -81,11 +81,20 @@ class NN(Model):
             x = pm.Data("x", data, dims="obs_id")
 
             # mixture weights
-            w = pm.Dirichlet("w", a=np.array([1.0, 1.0]), dims="component")
+            w = pm.Dirichlet("w", a=np.array([0.3, 0.7]), dims="component")
 
             # priors
-            mu = pm.Normal("mu", mu=np.array([0.0, 1.0]), sigma=1, dims="component")
-            sigma = pm.HalfNormal("sigma", sigma=np.array([1.0, 1.0]), dims="component")
+            mu = pm.Normal(
+                "mu",
+                mu=np.array([offp_mean, onp_mean]),
+                sigma=np.array([0.1, 1.0]),
+                dims="component",
+            )
+            sigma = pm.HalfNormal(
+                "sigma",
+                sigma=np.array([offp_std, 1.0]),
+                dims="component",
+            )
 
             # 1) normal distribution for nulling
             # 2) normal distribution for pulses
