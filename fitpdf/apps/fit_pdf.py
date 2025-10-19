@@ -93,7 +93,7 @@ def parse_args():
     parser.add_argument(
         "--model",
         dest="model",
-        choices=["LL", "NN", "NNL"],
+        choices=["LL", "NL", "NN", "NNL"],
         default="NNL",
         help="Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
     )
@@ -207,6 +207,8 @@ def fit_pe_dist(t_data, t_offp, params):
     # model selection
     if params["model"] == "LL":
         mobj = fmodels.LL()
+    elif params["model"] == "NL":
+        mobj = fmodels.NL()
     elif params["model"] == "NN":
         mobj = fmodels.NN()
     elif params["model"] == "NNL":
