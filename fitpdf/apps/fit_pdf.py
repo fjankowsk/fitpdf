@@ -95,7 +95,7 @@ def parse_args():
         dest="model",
         choices=["LL", "NN", "NNL"],
         default="NNL",
-        help="Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distribution.",
+        help="Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
     )
 
     # options that affect the output formatting
