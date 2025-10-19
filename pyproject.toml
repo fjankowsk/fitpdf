@@ -48,6 +48,7 @@ develop = [
 ]
 
 [project.scripts]
+fitpdf-compare = "fitpdf.apps.compare_fits:main"
 fitpdf-fit = "fitpdf.apps.fit_pdf:main"
 
 [project.urls]

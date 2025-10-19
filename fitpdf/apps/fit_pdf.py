@@ -252,6 +252,10 @@ def fit_pe_dist(t_data, t_offp, params):
 
     assert hasattr(idata, "posterior_predictive")
 
+    # save idata to file
+    _filename = "idata_{0}.nc".format(params["model"])
+    az.to_netcdf(idata, _filename)
+
     plot_fit(mobj, idata, offp, params)
 
     # output the fit parameters
