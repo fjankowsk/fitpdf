@@ -449,3 +449,34 @@ def plot_prior_predictive(idata, t_data, t_offp, params):
         )
 
         plt.close(fig)
+
+
+def plot_fit_comparison(df_comp, params):
+    """
+    Plot a fit comparison.
+
+    Parameters
+    ----------
+    df_comp: ~pd.DataFrame
+        The fit comparison data.
+    params: dict
+        Additional parameters that influence the processing.
+    """
+
+    figsize = (7.4, len(df_comp.index))
+    fig = plt.figure(figsize=figsize)
+    ax = fig.add_subplot()
+
+    az.plot_compare(df_comp, ax=ax, insample_dev=True, legend=True, plot_ic_diff=True)
+
+    fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "fit_comparison.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)

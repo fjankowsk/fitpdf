@@ -20,6 +20,7 @@ from fitpdf.general_helpers import (
     configure_logging,
     signal_handler,
 )
+from fitpdf.plotting import plot_fit_comparison
 
 
 def parse_args():
@@ -99,6 +100,11 @@ def main():
     # sanity check command line arguments
     check_args(args)
 
+    params = {
+        "dpi": 300,
+        "output": args.output,
+    }
+
     idatas = {}
 
     for item in args.files:
@@ -111,13 +117,7 @@ def main():
     df_comp = az.compare(idatas)
     print(df_comp)
 
-    figsize = (7.4, len(df_comp.index))
-    fig = plt.figure(figsize=figsize)
-    ax = fig.add_subplot()
-
-    az.plot_compare(df_comp, ax=ax, insample_dev=True, legend=True, plot_ic_diff=True)
-
-    fig.tight_layout()
+    plot_fit_comparison(df_comp, params)
 
     plt.show()
 
