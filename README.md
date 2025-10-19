@@ -30,10 +30,24 @@ The latest stable version of the code should also be available on the Python pac
 ## Usage ##
 
 ```console
+$ fitpdf-compare -h
+usage: fitpdf-compare [-h] [-o] files [files ...]
+
+Compare fits.
+
+positional arguments:
+  files         Names of files to process. The input files must be InferenceData files produced by fitpdf-fit.
+
+options:
+  -h, --help    show this help message and exit
+
+Output formatting:
+  -o, --output  Output plots to file rather than to screen. (default: False)
+```
+
+```console
 $ fitpdf-fit -h
-usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {normal,lognormal,normal_lognormal}] [--ccdf] [--log] [--nbin value] [-o]
-                  [--title text]
-                  files [files ...]
+usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {LL,NN,NNL}] [--ccdf] [--log] [--nbin value] [-o] [--title text] files [files ...]
 
 Fit distribution data.
 
@@ -47,8 +61,8 @@ options:
                         The labels to use for each input file. (default: None)
   --mean value          The global mean fluence to divide the histograms by. (default: 1.0)
   --meanthresh value    Ignore fluence data below this mean fluence threshold, i.e. select only data where fluence / mean > meanthresh. (default: -3.0)
-  --model {normal,lognormal,normal_lognormal}
-                        Use the specified distribution model. (default: normal_lognormal)
+  --model {LL,NN,NNL}   Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.
+                        (default: NNL)
   --title text          Set a custom figure title. (default: None)
 
 Output formatting:
