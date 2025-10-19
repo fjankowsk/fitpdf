@@ -1,6 +1,6 @@
 #
 #   2025 Fabian Jankowski
-#   Normal mixture models.
+#   Normal - normal mixture model.
 #
 
 import logging
@@ -11,7 +11,7 @@ import pymc as pm
 from fitpdf.models.model import Model
 
 
-class Normal(Model):
+class NN(Model):
     name = "Normal - normal"
 
     def __init__(self):
@@ -19,7 +19,7 @@ class Normal(Model):
         Model distribution.
         """
 
-        self.__log = logging.getLogger("fitpdf.models")
+        self.__log = logging.getLogger("fitpdf.models.nn")
 
         self.ncomp = 2
 
@@ -109,9 +109,7 @@ class Normal(Model):
             The model PDF evaluated at the `x` values.
         """
 
-        if icomp == 0:
-            dist = pm.Normal.dist(mu=mu, sigma=sigma)
-        elif icomp == 1:
+        if icomp in [0, 1]:
             dist = pm.Normal.dist(mu=mu, sigma=sigma)
         else:
             raise NotImplementedError(f"Component not implemented: {icomp}")
