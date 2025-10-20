@@ -9,6 +9,7 @@ import os
 import signal
 
 import numpy as np
+import pandas as pd
 import pymc as pm
 
 if "DISPLAY" not in os.environ:
@@ -97,6 +98,20 @@ def main():
     )
 
     fon_samples = pm.draw(fon, draws=nsamp)
+
+    # write to disk
+    _temp = {
+        "rotation": np.arange(nsamp),
+        "fluence_on": fon_samples,
+        "nbin_on": 64,
+        "fluence_off": foff_samples,
+        "nbin_off": 64,
+        "fluence_off_same": foff_samples,
+        "nbin_off_same": 64,
+        "zapped": np.zeros(nsamp),
+    }
+    _df = pd.DataFrame(_temp)
+    _df.to_csv("simulated_fluences.csv", index=False)
 
     fig = plt.figure()
     ax = fig.add_subplot()
