@@ -93,7 +93,7 @@ def parse_args():
     parser.add_argument(
         "--model",
         dest="model",
-        choices=["NL", "NN", "NNL", "NNP"],
+        choices=["NL", "NN", "NNL"],
         default="NNL",
         help="Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
     )
@@ -211,8 +211,6 @@ def fit_pe_dist(t_data, t_offp, params):
         mobj = fmodels.NN()
     elif params["model"] == "NNL":
         mobj = fmodels.NNL()
-    elif params["model"] == "NNP":
-        mobj = fmodels.NNP()
     else:
         raise NotImplementedError("Model not implemented: %s", params["model"])
 
