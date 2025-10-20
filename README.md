@@ -47,12 +47,12 @@ Output formatting:
 
 ```console
 $ fitpdf-fit -h
-usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {NL,NN,NNL}] [--ccdf] [--log] [--nbin value] [-o] [--title text] files [files ...]
+usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {NL,NN,NNL}] [--ccdf] [--log] [--nbin value] [-o] [--title text] filename
 
 Fit distribution data.
 
 positional arguments:
-  files                 Names of files to process. The input files must be produced by the fluence time series option of plot-profilestack.
+  filename              Name of file to process. The input file must be produced by the fluence time series option of plot-profilestack.
 
 options:
   -h, --help            show this help message and exit
@@ -70,4 +70,18 @@ Output formatting:
   --log                 Show histograms in double logarithmic scale. (default: False)
   --nbin value          The number of histogram bins to use. (default: 50)
   -o, --output          Output plots to file rather than to screen. (default: False)
+```
+
+```console
+$ fitpdf-simulate -h
+usage: fitpdf-simulate [-h] [--nsamp value] [-o]
+
+Simulate distributions.
+
+options:
+  -h, --help     show this help message and exit
+  --nsamp value  Number of random samples to draw from the simulated distribution. (default: 10000)
+
+Output formatting:
+  -o, --output   Output plots to file rather than to screen. (default: False)
 ```
