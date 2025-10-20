@@ -221,13 +221,23 @@ def fit_pe_dist(t_data, t_offp, params):
     print(f"Observed RVs: {model.observed_RVs}")
     print(f"Initial point: {model.initial_point()}")
 
+    config = {}
+
     if params["fast"]:
-        draws = 700
+        config["draws"] = 700
+        config["tune"] = 700
     else:
-        draws = 10000
+        config["draws"] = 10000
+        config["tune"] = 2000
 
     with model:
-        idata = pm.sample(draws=draws, chains=4, init="advi+adapt_diag")
+        idata = pm.sample(
+            draws=config["draws"],
+            tune=config["tune"],
+            chains=4,
+            init="advi+adapt_diag",
+            nuts={"target_accept": 0.9},
+        )
         pm.compute_log_likelihood(idata)
 
     print(az.summary(idata))
