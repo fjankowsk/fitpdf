@@ -83,7 +83,7 @@ def main():
     sigma = [2.0, 1.0, 1.0]
 
     # off-pulse
-    foff = weights[0] * pm.Normal.dist(mu=mu[0], sigma=sigma[0])
+    foff = pm.Normal.dist(mu=mu[0], sigma=sigma[0])
 
     foff_samples = pm.draw(foff, draws=nsamp)
 
