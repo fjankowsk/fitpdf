@@ -50,6 +50,7 @@ develop = [
 [project.scripts]
 fitpdf-compare = "fitpdf.apps.compare_fits:main"
 fitpdf-fit = "fitpdf.apps.fit_pdf:main"
+fitpdf-simulate = "fitpdf.apps.simulate_dist:main"
 
 [project.urls]
 Homepage = "https://github.com/fjankowsk/fitpdf"
