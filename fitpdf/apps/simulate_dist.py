@@ -38,6 +38,15 @@ def parse_args():
         formatter_class=argparse.ArgumentDefaultsHelpFormatter,
     )
 
+    parser.add_argument(
+        "--nsamp",
+        dest="nsamp",
+        type=int,
+        metavar=("value"),
+        default=10000,
+        help="Number of random samples to draw from the simulated distribution.",
+    )
+
     # options that affect the output formatting
     output = parser.add_argument_group(title="Output formatting")
 
@@ -73,10 +82,9 @@ def main():
 
     params = {
         "dpi": 300,
+        "nsamp": args.nsamp,
         "output": args.output,
     }
-
-    nsamp = 10000
 
     weights = [0.3, 0.3, 0.7]
     mu = [0.0, 0.3, np.log(1.75)]
@@ -85,7 +93,7 @@ def main():
     # off-pulse
     foff = pm.Normal.dist(mu=mu[0], sigma=sigma[0])
 
-    foff_samples = pm.draw(foff, draws=nsamp)
+    foff_samples = pm.draw(foff, draws=params["nsamp"])
 
     # on-pulse
     fon = pm.Mixture.dist(
@@ -97,12 +105,12 @@ def main():
         ],
     )
 
-    fon_samples = pm.draw(fon, draws=nsamp)
+    fon_samples = pm.draw(fon, draws=params["nsamp"])
 
     # write to disk
     _temp = {
-        "rotation": np.arange(nsamp),
-        "zapped": np.zeros(nsamp).astype(bool),
+        "rotation": np.arange(params["nsamp"]),
+        "zapped": np.zeros(params["nsamp"]).astype(int),
         "fluence_on": fon_samples,
         "nbin_on": 64,
         "fluence_off": foff_samples,
@@ -135,6 +143,16 @@ def main():
     ax.set_yscale("log")
 
     fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            "chains.pdf",
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)
 
     plt.show()
 
