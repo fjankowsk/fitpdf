@@ -102,13 +102,13 @@ def main():
     # write to disk
     _temp = {
         "rotation": np.arange(nsamp),
+        "zapped": np.zeros(nsamp).astype(bool),
         "fluence_on": fon_samples,
         "nbin_on": 64,
         "fluence_off": foff_samples,
         "nbin_off": 64,
         "fluence_off_same": foff_samples,
         "nbin_off_same": 64,
-        "zapped": np.zeros(nsamp),
     }
     _df = pd.DataFrame(_temp)
     _df.to_csv("simulated_fluences.csv", index=False)

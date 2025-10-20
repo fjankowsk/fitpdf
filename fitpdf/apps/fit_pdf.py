@@ -179,11 +179,10 @@ def check_args(args):
         log.error(f"The mean fluence is invalid: {args.mean}")
         sys.exit(1)
 
-    # check that files exist
-    for item in args.files:
-        if not os.path.isfile(item):
-            log.error(f"File does not exist: {item}")
-            sys.exit(1)
+    # check that file exist
+    if not os.path.isfile(args.filename):
+        log.error(f"File does not exist: {args.filename}")
+        sys.exit(1)
 
 
 def fit_pe_dist(t_data, t_offp, params):
@@ -338,7 +337,7 @@ def main():
     df = pd.read_csv(args.filename)
     df["filename"] = args.filename
 
-    _data, _offp = plot_pe_dist(df, params)
+    _data, _offp = plot_pe_dist([df], params)
 
     fit_pe_dist(_data / params["mean"], _offp / params["mean"], params)
 
