@@ -48,10 +48,9 @@ def parse_args():
     )
 
     parser.add_argument(
-        "files",
+        "filename",
         type=str,
-        nargs="+",
-        help="Names of files to process. The input files must be produced by the fluence time series option of plot-profilestack.",
+        help="Name of file to process. The input file must be produced by the fluence time series option of plot-profilestack.",
     )
 
     parser.add_argument(
@@ -335,15 +334,11 @@ def main():
         "title": args.title,
     }
 
-    dfs = []
+    print(f"Processing: {args.filename}")
+    df = pd.read_csv(args.filename)
+    df["filename"] = args.filename
 
-    for item in args.files:
-        print(f"Processing: {item}")
-        df = pd.read_csv(item)
-        df["filename"] = item
-        dfs.append(df)
-
-    _data, _offp = plot_pe_dist(dfs, params)
+    _data, _offp = plot_pe_dist(df, params)
 
     fit_pe_dist(_data / params["mean"], _offp / params["mean"], params)
 
