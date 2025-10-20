@@ -20,6 +20,7 @@ import matplotlib.pyplot as plt
 
 from fitpdf.general_helpers import (
     configure_logging,
+    customise_matplotlib_format,
     signal_handler,
 )
 
@@ -102,6 +103,9 @@ def main():
     # sanity check command line arguments
     check_args(args)
 
+    # tweak the matplotlib output formatting
+    customise_matplotlib_format()
+
     params = {
         "dpi": 300,
         "nsamp": args.nsamp,
@@ -169,7 +173,7 @@ def main():
     # output plot to file
     if params["output"]:
         fig.savefig(
-            "chains.pdf",
+            "simulated_pdf.pdf",
             bbox_inches="tight",
             dpi=params["dpi"],
         )
