@@ -7,6 +7,7 @@ import argparse
 import logging
 import os
 import signal
+import sys
 
 import numpy as np
 import pandas as pd
@@ -64,6 +65,24 @@ def parse_args():
     return args
 
 
+def check_args(args):
+    """
+    Sanity check the commandline arguments.
+
+    Parameters
+    ----------
+    args: populated namespace
+        The commandline arguments.
+    """
+
+    log = logging.getLogger("fitpdf.simulate_dist")
+
+    # nsamp
+    if not args.nsamp > 100:
+        log.error(f"Number of samples is invalid: {args.nsamp}")
+        sys.exit(1)
+
+
 #
 # MAIN
 #
@@ -79,6 +98,9 @@ def main():
 
     # handle command line arguments
     args = parse_args()
+
+    # sanity check command line arguments
+    check_args(args)
 
     params = {
         "dpi": 300,
