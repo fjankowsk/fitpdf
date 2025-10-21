@@ -85,3 +85,11 @@ options:
 Output formatting:
   -o, --output   Output plots to file rather than to screen. (default: False)
 ```
+
+## Example output ##
+
+The images below show some example output from the program obtained when fitting simulated test data.
+
+![Simulated distribution data](https://github.com/fjankowsk/fitpdf/raw/master/docs/simulated_data.png "Simulated distribution data")
+
+![Example fit of the simulated test data](https://github.com/fjankowsk/fitpdf/raw/master/docs/fit_example.png "Example fit of the simulated test data")
