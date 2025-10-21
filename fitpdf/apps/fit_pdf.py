@@ -238,7 +238,10 @@ def fit_pe_dist(t_data, t_offp, params):
         )
         pm.compute_log_likelihood(idata)
 
-    print(az.summary(idata))
+    _df_result = az.summary(idata)
+    print(_df_result)
+    _df_result.to_csv("fit_result.csv")
+
     plot_chains(idata, params)
     plot_corner(idata, params)
 
