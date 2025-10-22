@@ -172,6 +172,58 @@ def check_args(args):
         sys.exit(1)
 
 
+def get_clean_data(t_df):
+    """
+    Clean the data.
+
+    Returns
+    -------
+    fon: ~np.array of float
+        The cleaned on-pulse fluence data.
+    foff: ~np.array of float
+        The cleaned off-pulse fluence data.
+    """
+
+    log = logging.getLogger("fitpdf.fit_pdf")
+
+    df = t_df.copy()
+
+    # exclude rfi zapped data
+    mask_zapped = df["zapped"].astype(bool)
+    mask_good = np.logical_not(mask_zapped)
+
+    # on-pulse
+    fon = df["fluence_on"].to_numpy()
+    mask = mask_good & np.isfinite(fon)
+
+    log.info(f"Size Fon before cleaning: {fon.size}")
+    fon = fon[mask]
+    fon = np.sort(fon)
+    log.info(f"Size Fon after cleaning: {fon.size}")
+
+    # off-pulse
+    if df["nbin_off_same"].iat[0] == df["nbin_on"].iat[0]:
+        foff = df["fluence_off_same"].to_numpy()
+    else:
+        foff = (df["fluence_off_same"] * df["nbin_on"] / df["nbin_off_same"]).to_numpy()
+        log.warning(
+            "Off-pulse phase range is too small: {0}, {1}. Scaling the off-pulse fluences.".format(
+                df["nbin_off_same"].iat[0], df["nbin_on"].iat[0]
+            )
+        )
+
+    log.info(f"Size Foff before cleaning: {foff.size}")
+    foff = foff[mask]
+    foff = np.sort(foff)
+    log.info(f"Size Foff after cleaning: {foff.size}")
+
+    assert np.all(np.isfinite(fon))
+    assert np.all(np.isfinite(foff))
+    assert fon.size == foff.size
+
+    return fon, foff
+
+
 def fit_pe_dist(t_data, t_offp, params):
     """
     Fit pulse-energy distribution.
@@ -330,9 +382,23 @@ def main():
     df = pd.read_csv(args.filename)
     df["filename"] = args.filename
 
-    _data, _offp = plot_pe_dist([df], params)
+    # sanity check
+    _fields = [
+        "zapped",
+        "fluence_on",
+        "nbin_on",
+        "fluence_off",
+        "nbin_off",
+        "fluence_off_same",
+        "nbin_off_same",
+    ]
+    assert all(item in df.columns for item in _fields)
 
-    fit_pe_dist(_data / params["mean"], _offp / params["mean"], params)
+    plot_pe_dist([df], params)
+
+    _fon, _foff = get_clean_data(df)
+
+    fit_pe_dist(_fon / params["mean"], _foff / params["mean"], params)
 
     plt.show()
 
