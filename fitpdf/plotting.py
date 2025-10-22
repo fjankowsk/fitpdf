@@ -304,9 +304,7 @@ def plot_fit(mobj, idata, offp, params):
         _ana_full = xr.apply_ufunc(
             mobj.get_analytic_pdf,
             plot_range,
-            idata.posterior["w"],
-            idata.posterior["mu"],
-            idata.posterior["sigma"],
+            idata.posterior,
             icomp,
         )
         _pdf = _ana_full.sel(component=icomp).mean(dim=("chain", "draw"))

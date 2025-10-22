@@ -272,7 +272,7 @@ def fit_pe_dist(t_data, t_offp, params):
         weight = {"value": quantiles[1], "error": error}
 
         # mode
-        _samples = mobj.get_mode(idata.posterior["mu"], idata.posterior["sigma"], icomp)
+        _samples = mobj.get_mode(idata.posterior, icomp)
         quantiles = _samples.sel(component=icomp).quantile(
             q=[0.16, 0.5, 0.84], dim=("chain", "draw")
         )

@@ -83,7 +83,7 @@ class LL(Model):
 
         return model
 
-    def get_analytic_pdf(self, x, w, mu, sigma, icomp):
+    def get_analytic_pdf(self, x, posterior, icomp):
         """
         Get the analytic PDF.
 
@@ -92,6 +92,10 @@ class LL(Model):
         pdf: ~np.array of float
             The model PDF evaluated at the `x` values.
         """
+
+        w = posterior["w"]
+        mu = posterior["mu"]
+        sigma = posterior["sigma"]
 
         if icomp in [0, 1]:
             dist = pm.Lognormal.dist(mu=mu, sigma=sigma)
@@ -102,7 +106,7 @@ class LL(Model):
 
         return pdf.eval()
 
-    def get_mode(self, mu, sigma, icomp):
+    def get_mode(self, posterior, icomp):
         """
         Compute the mode of the model component.
 
@@ -111,6 +115,9 @@ class LL(Model):
         mode: ~np.array of float
             The mode of the model component.
         """
+
+        mu = posterior["mu"]
+        sigma = posterior["sigma"]
 
         if icomp in [0, 1]:
             mode = np.exp(mu - np.power(sigma, 2))

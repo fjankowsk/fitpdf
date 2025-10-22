@@ -56,7 +56,7 @@ class Model(object):
         """
         pass
 
-    def get_analytic_pdf(self, x, w, mu, sigma, icomp):
+    def get_analytic_pdf(self, x, posterior, icomp):
         """
         Get the analytic PDF.
 
@@ -67,7 +67,7 @@ class Model(object):
         """
         pass
 
-    def get_mode(self, mu, sigma, icomp):
+    def get_mode(self, posterior, icomp):
         """
         Compute the mode of the model component.
 
