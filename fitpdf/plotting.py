@@ -5,14 +5,14 @@
 
 import arviz as az
 import corner
+from KDEpy import FFTKDE, TreeKDE
+from KDEpy.bw_selection import improved_sheather_jones
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.transforms as transforms
 import numpy as np
-from KDEpy import FFTKDE, TreeKDE
-from KDEpy.bw_selection import improved_sheather_jones
+import pymc as pm
 from scipy import stats
-import xarray as xr
 
 from fitpdf.stats import get_adaptive_bandwidth
 
@@ -163,7 +163,7 @@ def plot_adaptive_bandwidths(t_data, t_bandwidths, params):
         plt.close(fig)
 
 
-def plot_fit(mobj, idata, offp, params):
+def plot_fit(mobj, model, idata, offp, params):
     """
     Plot the distribution fit.
 
@@ -288,28 +288,44 @@ def plot_fit(mobj, idata, offp, params):
         )
 
     # plot the individual model components
-    plot_range = xr.DataArray(
-        np.linspace(
-            obs_data.min(),
-            obs_data.max(),
-            num=500,
-        ),
-        dims="plot",
-    )
-
     assert hasattr(mobj, "ncomp")
 
-    # plot component pdfs
     for icomp in range(mobj.ncomp):
-        _ana_full = xr.apply_ufunc(
-            mobj.get_analytic_pdf,
-            plot_range,
-            idata.posterior,
-            icomp,
-        )
-        _pdf = _ana_full.sel(component=icomp).mean(dim=("chain", "draw"))
+        # switch off the other component distributions
+        # dirichlet distribution must be normalised to unity
+        _weights = np.zeros(mobj.ncomp)
+        _weights[icomp] = 1.0
 
-        ax.plot(plot_range, _pdf, label=f"c{icomp}", lw=1, zorder=6)
+        fixed_params = {"w": _weights}
+        with pm.do(model, fixed_params):
+            thinned_idata = idata.sel(draw=slice(None, None, 20))
+            pp = pm.sample_posterior_predictive(thinned_idata, var_names=["obs"])
+
+            samples = pp.posterior_predictive["obs"].values.reshape(-1)
+            _mask = (samples >= kde_x_data.min()) & (samples <= kde_x_data.max())
+            kde_y = (
+                FFTKDE(kernel="gaussian", bw=min_bw_data)
+                .fit(samples[_mask])
+                .evaluate(kde_x_data)
+            )
+
+            # scale kde_y to true component weight
+            _true_w = (
+                idata.posterior["w"]
+                .sel(component=icomp)
+                .mean(dim=("chain", "draw"))
+                .values
+            )
+            true_kde_y = _true_w * kde_y
+
+            ax.plot(
+                kde_x_data,
+                true_kde_y,
+                label=f"c{icomp}",
+                lw=1,
+                zorder=6,
+                # rasterized=True,
+            )
 
     ax.legend(loc="best", frameon=False)
     if params["title"] is not None:

@@ -307,7 +307,7 @@ def fit_pe_dist(t_data, t_offp, params):
     _filename = "idata_{0}.nc".format(params["model"])
     az.to_netcdf(idata, _filename)
 
-    plot_fit(mobj, idata, offp, params)
+    plot_fit(mobj, model, idata, offp, params)
 
     # output the fit parameters
     print("\nFit parameters")
