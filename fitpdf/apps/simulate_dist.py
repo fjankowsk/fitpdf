@@ -113,8 +113,11 @@ def main():
     }
 
     weights = [0.3, 0.3, 0.7]
+    weights /= np.sum(weights)
     mu = [0.0, 0.3, np.log(1.75)]
     sigma = [2.0, 1.0, 1.0]
+
+    print(f"Mixture weights: {weights}")
 
     # off-pulse
     foff = pm.Normal.dist(mu=mu[0], sigma=sigma[0])

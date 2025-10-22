@@ -63,9 +63,14 @@ class LL(Model):
         data = t_data.copy()
         offp = t_offp.copy()
 
+        # mixture contributions
+        _weights = np.array([0.3, 0.7])
+        _weights /= np.sum(_weights)
+        self.__log.info(f"Mixture weights: {_weights}")
+
         with pm.Model() as model:
             # mixture weights
-            w = pm.Dirichlet("w", a=np.array([1, 1]))
+            w = pm.Dirichlet("w", a=_weights)
 
             # priors
             mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1)

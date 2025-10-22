@@ -75,13 +75,18 @@ class NNP(Model):
         print(f"Off-pulse mean: {offp_mean:.5f}")
         print(f"Off-pulse std: {offp_std:.5f}")
 
+        # mixture contributions
+        _weights = np.array([0.3, 0.3, 0.7])
+        _weights /= np.sum(_weights)
+        self.__log.info(f"Mixture weights: {_weights}")
+
         coords = {"component": np.arange(3), "obs_id": np.arange(len(data))}
 
         with pm.Model(coords=coords) as model:
             x = pm.Data("x", data, dims="obs_id")
 
             # mixture weights
-            w = pm.Dirichlet("w", a=np.array([0.3, 0.3, 0.7]), dims="component")
+            w = pm.Dirichlet("w", a=_weights, dims="component")
 
             # priors
             mu = pm.Normal(
