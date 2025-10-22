@@ -324,7 +324,6 @@ def plot_fit(mobj, model, idata, offp, params):
                 label=f"c{icomp}",
                 lw=1,
                 zorder=6,
-                # rasterized=True,
             )
 
     ax.legend(loc="best", frameon=False)

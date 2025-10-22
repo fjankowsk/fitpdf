@@ -237,6 +237,8 @@ def fit_pe_dist(t_data, t_offp, params):
         Additional parameters that influence the processing.
     """
 
+    log = logging.getLogger("fitpdf.fit_pdf")
+
     data = t_data.copy()
     offp = t_offp.copy()
 
@@ -248,7 +250,8 @@ def fit_pe_dist(t_data, t_offp, params):
     elif params["model"] == "NNL":
         mobj = fmodels.NNL()
     elif params["model"] == "NNP":
-        mobj = fmodels.NNP()
+        log.error("The NNP model is currently disabled.")
+        sys.exit(1)
     else:
         raise NotImplementedError("Model not implemented: %s", params["model"])
 
