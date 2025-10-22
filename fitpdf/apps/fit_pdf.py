@@ -27,7 +27,6 @@ from fitpdf.general_helpers import (
     customise_matplotlib_format,
     signal_handler,
 )
-from spanalysis.apps.plot_dist import plot_pe_dist
 import fitpdf.models as fmodels
 from fitpdf.plotting import plot_chains, plot_corner, plot_fit, plot_prior_predictive
 
@@ -367,7 +366,6 @@ def main():
         "dpi": 300,
         "fast": args.fast,
         "label": args.label,
-        "labels": [args.label],
         "log": args.log,
         "mean": args.mean,
         "mean_thresh": args.mean_thresh,
@@ -393,8 +391,6 @@ def main():
         "nbin_off_same",
     ]
     assert all(item in df.columns for item in _fields)
-
-    plot_pe_dist([df], params)
 
     _fon, _foff = get_clean_data(df)
 
