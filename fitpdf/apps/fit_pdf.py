@@ -315,6 +315,7 @@ def main():
         "dpi": 300,
         "fast": args.fast,
         "label": args.label,
+        "labels": [args.label],
         "log": args.log,
         "mean": args.mean,
         "mean_thresh": args.mean_thresh,
