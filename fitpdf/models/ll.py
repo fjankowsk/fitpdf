@@ -83,29 +83,6 @@ class LL(Model):
 
         return model
 
-    def get_analytic_pdf(self, x, posterior, icomp):
-        """
-        Get the analytic PDF.
-
-        Returns
-        -------
-        pdf: ~np.array of float
-            The model PDF evaluated at the `x` values.
-        """
-
-        w = posterior["w"]
-        mu = posterior["mu"]
-        sigma = posterior["sigma"]
-
-        if icomp in [0, 1]:
-            dist = pm.Lognormal.dist(mu=mu, sigma=sigma)
-        else:
-            raise NotImplementedError(f"Component not implemented: {icomp}")
-
-        pdf = w[icomp] * pm.logp(dist, x).exp()
-
-        return pdf.eval()
-
     def get_mode(self, posterior, icomp):
         """
         Compute the mode of the model component.

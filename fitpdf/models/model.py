@@ -56,17 +56,6 @@ class Model(object):
         """
         pass
 
-    def get_analytic_pdf(self, x, posterior, icomp):
-        """
-        Get the analytic PDF.
-
-        Returns
-        -------
-        pdf: ~np.array of float
-            The model PDF evaluated at the `x` values.
-        """
-        pass
-
     def get_mode(self, posterior, icomp):
         """
         Compute the mode of the model component.
