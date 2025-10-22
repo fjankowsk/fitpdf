@@ -195,10 +195,10 @@ def get_clean_data(t_df):
     fon = df["fluence_on"].to_numpy()
     mask = mask_good & np.isfinite(fon)
 
-    log.info(f"Size Fon before cleaning: {fon.size}")
+    log.info(f"Size of Fon before cleaning: {fon.size}")
     fon = fon[mask]
     fon = np.sort(fon)
-    log.info(f"Size Fon after cleaning: {fon.size}")
+    log.info(f"Size of Fon after cleaning: {fon.size}")
 
     # off-pulse
     if df["nbin_off_same"].iat[0] == df["nbin_on"].iat[0]:
@@ -211,10 +211,10 @@ def get_clean_data(t_df):
             )
         )
 
-    log.info(f"Size Foff before cleaning: {foff.size}")
+    log.info(f"Size of Foff before cleaning: {foff.size}")
     foff = foff[mask]
     foff = np.sort(foff)
-    log.info(f"Size Foff after cleaning: {foff.size}")
+    log.info(f"Size of Foff after cleaning: {foff.size}")
 
     assert np.all(np.isfinite(fon))
     assert np.all(np.isfinite(foff))
