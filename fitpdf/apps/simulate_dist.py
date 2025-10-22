@@ -112,7 +112,7 @@ def main():
         "output": args.output,
     }
 
-    weights = [0.3, 0.3, 0.7]
+    weights = [0.2, 0.3, 0.5]
     weights /= np.sum(weights)
     mu = [0.0, 0.3, np.log(1.75)]
     sigma = [2.0, 1.0, 1.0]

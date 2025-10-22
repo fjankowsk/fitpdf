@@ -76,7 +76,7 @@ class NNP(Model):
         print(f"Off-pulse std: {offp_std:.5f}")
 
         # mixture contributions
-        _weights = np.array([0.3, 0.3, 0.7])
+        _weights = np.array([0.2, 0.3, 0.5])
         _weights /= np.sum(_weights)
         self.__log.info(f"Mixture weights: {_weights}")
 
