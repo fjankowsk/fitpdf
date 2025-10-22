@@ -74,8 +74,8 @@ def parse_args():
         dest="mean",
         type=float,
         metavar=("value"),
-        default=1.0,
-        help="The global mean fluence to divide the histograms by.",
+        default=None,
+        help="The global mean fluence by which to divide the histograms. The default behaviour is to determine it automatically from the on-pulse fluence data.",
     )
 
     parser.add_argument(
@@ -159,11 +159,12 @@ def check_args(args):
     log = logging.getLogger("fitpdf.fit_pdf")
 
     # check the mean
-    if args.mean > 0:
-        pass
-    else:
-        log.error(f"The mean fluence is invalid: {args.mean}")
-        sys.exit(1)
+    if args.mean is not None:
+        if args.mean > 0:
+            pass
+        else:
+            log.error(f"The mean fluence is invalid: {args.mean}")
+            sys.exit(1)
 
     # check that file exist
     if not os.path.isfile(args.filename):
@@ -397,7 +398,13 @@ def main():
 
     _fon, _foff = get_clean_data(df)
 
-    fit_pe_dist(_fon / params["mean"], _foff / params["mean"], params)
+    # determine global on-pulse mean fluence
+    if args.mean is None:
+        _global_mean = np.mean(_fon)
+    else:
+        _global_mean = params["mean"]
+
+    fit_pe_dist(_fon / _global_mean, _foff / _global_mean, params)
 
     plt.show()
 
