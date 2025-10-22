@@ -62,13 +62,12 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--labels",
-        dest="labels",
+        "--label",
+        dest="label",
         type=str,
-        nargs="+",
         metavar=("name"),
         default=None,
-        help="The labels to use for each input file.",
+        help="The label to use for the input file.",
     )
 
     parser.add_argument(
@@ -92,9 +91,9 @@ def parse_args():
     parser.add_argument(
         "--model",
         dest="model",
-        choices=["NL", "NN", "NNL"],
+        choices=["NL", "NN", "NNL", "NNP"],
         default="NNL",
-        help="Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
+        help="Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
     )
 
     # options that affect the output formatting
@@ -160,18 +159,6 @@ def check_args(args):
 
     log = logging.getLogger("fitpdf.fit_pdf")
 
-    # check the labels
-    if args.labels is not None:
-        if len(args.labels) == len(args.files):
-            pass
-        else:
-            log.error(
-                "The number of labels is invalid: {0}, {1}".format(
-                    len(args.files), len(args.labels)
-                )
-            )
-            sys.exit(1)
-
     # check the mean
     if args.mean > 0:
         pass
@@ -209,6 +196,8 @@ def fit_pe_dist(t_data, t_offp, params):
         mobj = fmodels.NN()
     elif params["model"] == "NNL":
         mobj = fmodels.NNL()
+    elif params["model"] == "NNP":
+        mobj = fmodels.NNP()
     else:
         raise NotImplementedError("Model not implemented: %s", params["model"])
 
@@ -325,7 +314,7 @@ def main():
         "ccdf": args.ccdf,
         "dpi": 300,
         "fast": args.fast,
-        "labels": args.labels,
+        "label": args.label,
         "log": args.log,
         "mean": args.mean,
         "mean_thresh": args.mean_thresh,

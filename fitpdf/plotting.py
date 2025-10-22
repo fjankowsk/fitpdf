@@ -200,10 +200,10 @@ def plot_fit(mobj, idata, offp, params):
         TreeKDE(kernel="gaussian", bw=bandwidths).fit(obs_data).evaluate()
     )
 
-    if params["labels"] is None:
+    if params["label"] is None:
         label = "data"
     else:
-        label = params["labels"][0]
+        label = params["label"]
 
     ax.plot(kde_x_data, kde_y_data, color="black", lw=2, label=label, zorder=4)
 
@@ -392,10 +392,10 @@ def plot_prior_predictive(idata, t_data, t_offp, params):
     bins = np.linspace(data.min(), data.max(), num=params["nbin"])
 
     # data
-    if params["labels"] is None:
+    if params["label"] is None:
         label = "on"
     else:
-        label = params["labels"][0]
+        label = params["label"]
 
     ax.hist(
         data,
