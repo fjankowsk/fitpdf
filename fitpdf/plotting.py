@@ -29,7 +29,7 @@ def plot_chains(idata, params):
         Additional parameters that influence the processing.
     """
 
-    az.plot_trace(idata)
+    az.plot_trace(idata, trace_kwargs={"rasterized": True})
 
     fig = plt.gcf()
     fig.tight_layout()
