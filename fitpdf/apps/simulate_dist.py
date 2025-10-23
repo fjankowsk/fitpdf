@@ -13,6 +13,8 @@ import numpy as np
 import pandas as pd
 import pymc as pm
 
+import matplotlib
+
 if "DISPLAY" not in os.environ:
     # set a rendering backend that does not require an X server
     matplotlib.use("Agg")
@@ -49,6 +51,15 @@ def parse_args():
         help="Number of random samples to draw from the simulated distribution.",
     )
 
+    parser.add_argument(
+        "--randomseed",
+        dest="randomseed",
+        type=int,
+        metavar=("value"),
+        default=None,
+        help="Enable deterministic mode by providing a seed value for the random number generator. This is useful if you want to fix the underlying distribution when changing the number of samples. The default behaviour is non-deterministic, i.e. the simulation uses different distribution parameters in each run.",
+    )
+
     # options that affect the output formatting
     output = parser.add_argument_group(title="Output formatting")
 
@@ -83,6 +94,12 @@ def check_args(args):
         log.error(f"Number of samples is invalid: {args.nsamp}")
         sys.exit(1)
 
+    # randomseed
+    if args.randomseed is not None:
+        if not args.randomseed > 0:
+            log.error(f"Random seed value is invalid: {args.randomseed}")
+            sys.exit(1)
+
 
 #
 # MAIN
@@ -112,6 +129,12 @@ def main():
         "output": args.output,
     }
 
+    # switch between non-deterministic (default) and deterministic mode
+    if args.randomseed is None:
+        rng = None
+    else:
+        rng = np.random.default_rng(args.randomseed)
+
     weights = [0.2, 0.3, 0.5]
     weights /= np.sum(weights)
     mu = [0.0, 0.3, np.log(1.75)]
@@ -122,7 +145,7 @@ def main():
     # off-pulse
     foff = pm.Normal.dist(mu=mu[0], sigma=sigma[0])
 
-    foff_samples = pm.draw(foff, draws=params["nsamp"])
+    foff_samples = pm.draw(foff, draws=params["nsamp"], random_seed=rng)
 
     # on-pulse
     fon = pm.Mixture.dist(
@@ -134,7 +157,7 @@ def main():
         ],
     )
 
-    fon_samples = pm.draw(fon, draws=params["nsamp"])
+    fon_samples = pm.draw(fon, draws=params["nsamp"], random_seed=rng)
 
     # write to disk
     _temp = {
