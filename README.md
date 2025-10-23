@@ -47,7 +47,7 @@ Output formatting:
 
 ```console
 $ fitpdf-fit -h
-usage: fitpdf-fit [-h] [--fast] [--labels name [name ...]] [--mean value] [--meanthresh value] [--model {NL,NN,NNL}] [--ccdf] [--log] [--nbin value] [-o] [--title text] filename
+usage: fitpdf-fit [-h] [--fast] [--label name] [--mean value] [--meanthresh value] [--model {NL,NN,NNL,NNP}] [--ccdf] [--log] [--nbin value] [-o] [--title text] filename
 
 Fit distribution data.
 
@@ -57,12 +57,12 @@ positional arguments:
 options:
   -h, --help            show this help message and exit
   --fast                Enable fast processing. This reduces the number of MCMC steps drastically. (default: False)
-  --labels name [name ...]
-                        The labels to use for each input file. (default: None)
-  --mean value          The global mean fluence to divide the histograms by. (default: 1.0)
+  --label name          The label to use for the input file. (default: None)
+  --mean value          The global mean fluence by which to divide the histograms. The default behaviour is to determine it automatically from the on-pulse fluence data. (default: None)
   --meanthresh value    Ignore fluence data below this mean fluence threshold, i.e. select only data where fluence / mean > meanthresh. (default: -3.0)
-  --model {NL,NN,NNL}   Use the specified distribution model, where N denotes a Normal and L a Lognormal component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.
-                        (default: NNL)
+  --model {NL,NN,NNL,NNP}
+                        Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw component. For instance, the default NNL model consists of two Normal and one Lognormal
+                        distributions. (default: NNL)
   --title text          Set a custom figure title. (default: None)
 
 Output formatting:
@@ -74,16 +74,18 @@ Output formatting:
 
 ```console
 $ fitpdf-simulate -h
-usage: fitpdf-simulate [-h] [--nsamp value] [-o]
+usage: fitpdf-simulate [-h] [--nsamp value] [--randomseed value] [-o]
 
 Simulate distributions.
 
 options:
-  -h, --help     show this help message and exit
-  --nsamp value  Number of random samples to draw from the simulated distribution. (default: 10000)
+  -h, --help          show this help message and exit
+  --nsamp value       Number of random samples to draw from the simulated distribution. (default: 10000)
+  --randomseed value  Enable deterministic mode by providing a seed value for the random number generator. This is useful if you want to fix the underlying distribution when changing the number of samples. The
+                      default behaviour is non-deterministic, i.e. the simulation uses different distribution parameters in each run. (default: None)
 
 Output formatting:
-  -o, --output   Output plots to file rather than to screen. (default: False)
+  -o, --output        Output plots to file rather than to screen. (default: False)
 ```
 
 ## Example output ##
