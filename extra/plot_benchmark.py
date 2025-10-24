@@ -30,8 +30,9 @@ for item in dfs:
     _nsamp = int(_nsamp)
     _mean = item.at["w[0]", "mean"]
     _std = item.at["w[0]", "sd"]
+    _rhat_max = item["r_hat"].max()
 
-    _temp = {"nsamp": _nsamp, "mean": _mean, "std": _std}
+    _temp = {"nsamp": _nsamp, "mean": _mean, "std": _std, "rhat_max": _rhat_max}
     results.append(_temp)
     print(_temp)
 
@@ -43,6 +44,23 @@ print(df_results)
 df_results.info()
 
 params = {"dpi": 300}
+
+# rhat max
+fig = plt.figure()
+ax = fig.add_subplot()
+
+ax.scatter(df_results["nsamp"], df_results["rhat_max"], marker="x", zorder=4)
+
+ax.set_xlabel("Number of samples")
+ax.set_ylabel("Maximum Rhat")
+
+fig.tight_layout()
+
+fig.savefig(
+    "benchmark_rhat_max.pdf",
+    bbox_inches="tight",
+    dpi=params["dpi"],
+)
 
 # parameter recovery accuracy
 true_val = 0.2
