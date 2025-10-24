@@ -67,6 +67,28 @@ fig.savefig(
     dpi=params["dpi"],
 )
 
+# relative uncertainty
+fig = plt.figure()
+ax = fig.add_subplot()
+
+_rel_error = 100.0 * df_results["std"] / df_results["mean"]
+
+ax.scatter(df_results["nsamp"], _rel_error, marker="x", zorder=4)
+
+ax.axhline(y=20.0, ls="dashed", lw=2, color="C1", zorder=3)
+ax.axhline(y=10.0, ls="dashed", lw=2, color="C2", zorder=3)
+
+ax.set_xlabel("Number of samples")
+ax.set_ylabel("Relative uncertainty (%)")
+
+fig.tight_layout()
+
+fig.savefig(
+    "benchmark_rel_uncertainty.pdf",
+    bbox_inches="tight",
+    dpi=params["dpi"],
+)
+
 # parameter delta
 fig = plt.figure()
 ax = fig.add_subplot()
