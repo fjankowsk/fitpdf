@@ -5,6 +5,8 @@ for isamp in 250 500 1000 2000 3000 4000 5000 6000 7000 8000 9000 10000 12500 15
     echo "Running: ${isamp} samples"
     fitpdf-simulate --randomseed 42 --nsamp ${isamp} --output
     fitpdf-fit simulated_fluences.csv --output --title "${isamp} samples"
+    mv chains.pdf chains_${isamp}.pdf
+    mv corner.pdf corner_${isamp}.pdf
     mv pedist_fit.pdf pedist_fit_${isamp}.pdf
     mv fit_result.csv fit_result_${isamp}.csv
 done
