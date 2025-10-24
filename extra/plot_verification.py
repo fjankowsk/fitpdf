@@ -57,7 +57,7 @@ ax.set_ylabel("Maximum Rhat")
 fig.tight_layout()
 
 fig.savefig(
-    "benchmark_rhat_max.pdf",
+    "verification_rhat_max.pdf",
     bbox_inches="tight",
     dpi=params["dpi"],
 )
@@ -80,7 +80,7 @@ ax.set_ylabel("Fit value")
 fig.tight_layout()
 
 fig.savefig(
-    "benchmark_accuracy.pdf",
+    "verification_accuracy.pdf",
     bbox_inches="tight",
     dpi=params["dpi"],
 )
@@ -102,7 +102,7 @@ ax.set_ylabel("Relative uncertainty (%)")
 fig.tight_layout()
 
 fig.savefig(
-    "benchmark_rel_uncertainty.pdf",
+    "verification_rel_uncertainty.pdf",
     bbox_inches="tight",
     dpi=params["dpi"],
 )
@@ -127,7 +127,7 @@ ax.set_ylabel("Delta (std)")
 fig.tight_layout()
 
 fig.savefig(
-    "benchmark_delta_std.pdf",
+    "verification_delta_std.pdf",
     bbox_inches="tight",
     dpi=params["dpi"],
 )
@@ -146,7 +146,7 @@ ax.set_ylabel("Fit value")
 fig.tight_layout()
 
 fig.savefig(
-    "benchmark_histogram.pdf",
+    "verification_histogram.pdf",
     bbox_inches="tight",
     dpi=params["dpi"],
 )
