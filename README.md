@@ -92,6 +92,6 @@ Output formatting:
 
 The images below show some example output from the program obtained when fitting simulated test data.
 
-![Simulated distribution data](https://github.com/fjankowsk/fitpdf/raw/master/docs/simulated_data.png "Simulated distribution data")
+![Simulated distribution data](https://raw.githubusercontent.com/fjankowsk/fitpdf/refs/heads/main/docs/simulated_data.png "Simulated distribution data")
 
-![Example fit of the simulated test data](https://github.com/fjankowsk/fitpdf/raw/master/docs/fit_example.png "Example fit of the simulated test data")
+![Example fit of the simulated test data](https://raw.githubusercontent.com/fjankowsk/fitpdf/refs/heads/main/docs/fit_example.png "Example fit of the simulated test data")
