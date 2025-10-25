@@ -20,7 +20,6 @@ dependencies = [
     "pandas",
     "pymc",
     "scipy",
-    "xarray",
 ]
 authors = [
   { name="Fabian Jankowski", email="fjankowsk@gmail.com" }
