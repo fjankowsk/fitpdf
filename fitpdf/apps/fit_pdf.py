@@ -386,6 +386,7 @@ def main():
 
     # sanity check
     _fields = [
+        "rotation",
         "zapped",
         "fluence_on",
         "nbin_on",
