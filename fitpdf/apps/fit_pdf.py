@@ -230,14 +230,14 @@ def get_clean_data(t_df):
     return fon, foff
 
 
-def fit_pe_dist(t_data, t_offp, params):
+def fit_pedist(t_data, t_offp, params):
     """
-    Fit pulse-energy distribution.
+    Fit pulse-energy distribution data.
 
     Parameters
     ----------
     t_data: ~np.array of float
-        The input data.
+        The on-pulse data.
     t_offp: ~np.array of float
         The off-pulse data.
     params: dict
@@ -421,7 +421,7 @@ def main():
     params["outfile"] = "pedist_pdf.pdf"
     plot_pedist(_fon / _global_mean, _foff / _global_mean, params)
 
-    fit_pe_dist(_fon / _global_mean, _foff / _global_mean, params)
+    fit_pedist(_fon / _global_mean, _foff / _global_mean, params)
 
     plt.show()
 
