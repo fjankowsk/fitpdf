@@ -90,15 +90,15 @@ Output formatting:
 
 ## Input file format ##
 
-`fitpdf` reads the input data from simple plain text files in comma-separated values (CSV) format. The files must contain at least the following data fields or columns:
+`fitpdf` reads the input distribution data from simple plain text files in comma-separated values (CSV) format. The files must contain at least the following data fields or columns:
 
 * "rotation": integer
 
-The rotation or pulse number corresponding to the fluence entru.
+The rotation or pulse number corresponding to the fluence entry.
 
-* "zapped": boolean (True/False or 0/1)
+* "zapped": boolean or integer (True/False or 0/1)
 
-A flag indicating whether the rotation has been zapped or RFI excised. All entries with zapped == True are excluded from the fitting.
+A flag indicating whether the rotation has been zapped or RFI excised. All entries where zapped == True are excluded from the fitting.
 
 * "fluence_on": float
 
@@ -110,7 +110,7 @@ The width of the on-pulse phase range in bins.
 
 * "fluence_off": float
 
-The fluence of flux density integrated (summed) across the entire off-pulse phase range.
+The fluence or flux density integrated (summed) across the entire off-pulse phase range.
 
 * "nbin_off": integer
 
@@ -124,7 +124,7 @@ The fluence or flux density integrated (summed) across a subset of the off-pulse
 
 The width of the off-pulse phase range subset in bins.
 
-The line below provides a minimal CSV header.
+The line below provides a minimal CSV header that you can use.
 
 `rotation,zapped,fluence_on,nbin_on,fluence_off,nbin_off,fluence_off_same,nbin_off_same`
 
