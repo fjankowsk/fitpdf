@@ -129,6 +129,7 @@ def main():
         "nbin": "auto",
         "nsamp": args.nsamp,
         "output": args.output,
+        "title": None,
     }
 
     # switch between non-deterministic (default) and deterministic mode

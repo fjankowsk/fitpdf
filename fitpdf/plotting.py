@@ -177,14 +177,24 @@ def plot_pedist(fon, foff, params):
         color="dimgrey",
         density=True,
         histtype="stepfilled",
+        label="off",
         zorder=3,
         alpha=0.3,
     )
 
     ax.hist(
-        fon, bins=params["nbin"], color="black", density=True, histtype="step", zorder=5
+        fon,
+        bins=params["nbin"],
+        color="black",
+        density=True,
+        histtype="step",
+        label="on",
+        zorder=5,
     )
 
+    ax.legend(loc="best", frameon=False)
+    if params["title"] is not None:
+        ax.set_title(params["title"])
     ax.set_xlabel(r"$F \: / \: \left< F_\mathrm{on} \right>$")
     ax.set_ylabel("PDF")
     ax.set_yscale("log")
