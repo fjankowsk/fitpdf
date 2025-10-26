@@ -57,14 +57,6 @@ def plot_corner(idata, params):
         Additional parameters that influence the processing.
     """
 
-    # get maximum likelihood values
-    posterior = az.extract(idata.posterior)
-    llike = az.extract(idata.log_likelihood)
-
-    max_likelihood_idx = llike.sum("obs_id").argmax()
-    max_likelihood_idx = max_likelihood_idx["obs"].values
-    max_likelihood_values = posterior.isel(sample=max_likelihood_idx)
-
     # defaults
     bins = 40
     fontsize_before = matplotlib.rcParams["font.size"]
@@ -89,7 +81,6 @@ def plot_corner(idata, params):
         hist_kwargs=hist_kwargs,
         labelpad=labelpad,
         max_n_ticks=max_n_ticks,
-        truths=max_likelihood_values,
         plot_datapoints=plot_datapoints,
         quantiles=[0.16, 0.5, 0.84],
         show_titles=show_titles,
