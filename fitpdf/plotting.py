@@ -172,6 +172,17 @@ def plot_pedist(fon, foff, params):
     ax = fig.add_subplot()
 
     ax.hist(
+        fon,
+        bins=params["nbin"],
+        color="black",
+        density=True,
+        histtype="step",
+        label="on",
+        lw=2,
+        zorder=5,
+    )
+
+    ax.hist(
         foff,
         bins=params["nbin"],
         color="dimgrey",
@@ -180,16 +191,6 @@ def plot_pedist(fon, foff, params):
         label="off",
         zorder=3,
         alpha=0.3,
-    )
-
-    ax.hist(
-        fon,
-        bins=params["nbin"],
-        color="black",
-        density=True,
-        histtype="step",
-        label="on",
-        zorder=5,
     )
 
     ax.legend(loc="best", frameon=False)
