@@ -92,12 +92,12 @@ class NN(Model):
             mu = pm.Normal(
                 "mu",
                 mu=np.array([offp_mean, onp_mean]),
-                sigma=np.array([0.1, 1.0]),
+                sigma=np.array([0.1, 1.0]) * onp_std,
                 dims="component",
             )
             sigma = pm.HalfNormal(
                 "sigma",
-                sigma=np.array([offp_std, 1.0]),
+                sigma=np.array([offp_std, onp_std]),
                 dims="component",
             )
 

@@ -63,18 +63,42 @@ class LL(Model):
         data = t_data.copy()
         offp = t_offp.copy()
 
+        # on-pulse mean and std
+        onp_mean = np.mean(data)
+        onp_std = np.std(data)
+        print(f"On-pulse mean: {onp_mean:.5f}")
+        print(f"On-pulse std: {onp_std:.5f}")
+
+        # off-pulse mean and std
+        offp_mean = np.mean(offp)
+        offp_std = np.std(offp)
+        print(f"Off-pulse mean: {offp_mean:.5f}")
+        print(f"Off-pulse std: {offp_std:.5f}")
+
         # mixture contributions
         _weights = np.array([0.3, 0.7])
         _weights /= np.sum(_weights)
         self.__log.info(f"Mixture weights: {_weights}")
 
-        with pm.Model() as model:
+        coords = {"component": np.arange(2), "obs_id": np.arange(len(data))}
+
+        with pm.Model(coords=coords) as model:
+            x = pm.Data("x", data, dims="obs_id")
+
             # mixture weights
-            w = pm.Dirichlet("w", a=_weights)
+            w = pm.Dirichlet("w", a=_weights, dims="component")
 
             # priors
-            mu = pm.Normal("mu", mu=np.array([0, 1]), sigma=1)
-            sigma = pm.HalfNormal("sigma", sigma=np.array([1, 1]))
+            mu = pm.Normal(
+                "mu",
+                # np.log(onp_mean) = 0.0
+                mu=np.array([np.log(onp_mean), np.log(onp_mean)]),
+                sigma=np.array([1.0, 1.0]) * onp_std,
+                dims="component",
+            )
+            sigma = pm.HalfNormal(
+                "sigma", sigma=np.array([0.25, 0.75]), dims="component"
+            )
 
             # 1) lognormal distribution
             lognorm1 = pm.Lognormal.dist(mu=mu[0], sigma=sigma[0])
@@ -84,7 +108,7 @@ class LL(Model):
 
             components = [lognorm1, lognorm2]
 
-            pm.Mixture("obs", w=w, comp_dists=components, observed=data)
+            pm.Mixture("obs", w=w, comp_dists=components, observed=x, dims="obs_id")
 
         return model
 

@@ -137,8 +137,8 @@ def main():
 
     weights = [0.2, 0.3, 0.5]
     weights /= np.sum(weights)
-    mu = [0.0, 0.3, np.log(1.75)]
-    sigma = [2.0, 1.0, 1.0]
+    mu = [0.0, 0.5, 0.0]
+    sigma = [2.0, 1.0, 0.5]
 
     print(f"Mixture weights: {weights}")
 

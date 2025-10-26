@@ -399,11 +399,18 @@ def main():
 
     _fon, _foff = get_clean_data(df)
 
-    # determine global on-pulse mean fluence
+    # standardise the data by dividing by the mean on-pulse fluence
+    # we should also divide by the on-pulse standard deviation for a
+    # proper data standardisation (unity mean and unity standard deviation)
+    # however, then we must keep track of the parameters and transform the inference data back later
+    # we express the priors in data units (on and off-pulse mean fluence) instead here
+    # this avoids the back transformation later
     if args.mean is None:
         _global_mean = np.mean(_fon)
     else:
         _global_mean = params["mean"]
+
+    print(f"Global mean on-pulse fluence: {_global_mean:.3f}")
 
     fit_pe_dist(_fon / _global_mean, _foff / _global_mean, params)
 
