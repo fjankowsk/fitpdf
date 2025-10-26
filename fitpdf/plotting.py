@@ -163,6 +163,54 @@ def plot_adaptive_bandwidths(t_data, t_bandwidths, params):
         plt.close(fig)
 
 
+def plot_pedist(foff, fon, params):
+    """
+    Plot the pulse-energy distribution data samples.
+
+    Parameters
+    ----------
+    foff: ~np.array of float
+        The off-pulse fluence samples.
+    fon: ~np.array of float
+        The on-pulse fluence samples.
+    params: dict
+        Other parameters that influence the processing.
+    """
+
+    fig = plt.figure()
+    ax = fig.add_subplot()
+
+    ax.hist(
+        foff,
+        bins=params["nbin"],
+        color="dimgrey",
+        density=True,
+        histtype="stepfilled",
+        zorder=3,
+        alpha=0.3,
+    )
+
+    ax.hist(
+        fon, bins=params["nbin"], color="black", density=True, histtype="step", zorder=5
+    )
+
+    ax.set_xlabel(r"$F \: / \: \left< F_\mathrm{on} \right>$")
+    ax.set_ylabel("PDF")
+    ax.set_yscale("log")
+
+    fig.tight_layout()
+
+    # output plot to file
+    if params["output"]:
+        fig.savefig(
+            params["outfile"],
+            bbox_inches="tight",
+            dpi=params["dpi"],
+        )
+
+        plt.close(fig)
+
+
 def plot_fit(mobj, model, idata, offp, params):
     """
     Plot the distribution fit.

@@ -25,6 +25,7 @@ from fitpdf.general_helpers import (
     customise_matplotlib_format,
     signal_handler,
 )
+from fitpdf.plotting import plot_pedist
 
 
 def parse_args():
@@ -125,6 +126,7 @@ def main():
 
     params = {
         "dpi": 300,
+        "nbin": "auto",
         "nsamp": args.nsamp,
         "output": args.output,
     }
@@ -173,38 +175,8 @@ def main():
     _df = pd.DataFrame(_temp)
     _df.to_csv("simulated_fluences.csv", index=False)
 
-    fig = plt.figure()
-    ax = fig.add_subplot()
-
-    ax.hist(
-        foff_samples,
-        bins="auto",
-        color="dimgrey",
-        density=True,
-        histtype="stepfilled",
-        zorder=3,
-        alpha=0.3,
-    )
-
-    ax.hist(
-        fon_samples, bins="auto", color="black", density=True, histtype="step", zorder=5
-    )
-
-    ax.set_xlabel(r"$F \: / \: \left< F_\mathrm{on} \right>$")
-    ax.set_ylabel("PDF")
-    ax.set_yscale("log")
-
-    fig.tight_layout()
-
-    # output plot to file
-    if params["output"]:
-        fig.savefig(
-            "simulated_pdf.pdf",
-            bbox_inches="tight",
-            dpi=params["dpi"],
-        )
-
-        plt.close(fig)
+    params["outfile"] = "simulated_pdf.pdf"
+    plot_pedist(foff_samples, fon_samples, params)
 
     plt.show()
 
