@@ -171,13 +171,18 @@ def plot_pedist(fon, foff, params):
     fig = plt.figure()
     ax = fig.add_subplot()
 
+    if params["label"] is None:
+        _label = "on"
+    else:
+        _label = params["label"]
+
     ax.hist(
         fon,
         bins=params["nbin"],
         color="black",
         density=True,
         histtype="step",
-        label="on",
+        label=_label,
         lw=2,
         zorder=5,
     )
@@ -251,11 +256,11 @@ def plot_fit(mobj, model, idata, offp, params):
     )
 
     if params["label"] is None:
-        label = "data"
+        _label = "on"
     else:
-        label = params["label"]
+        _label = params["label"]
 
-    ax.plot(kde_x_data, kde_y_data, color="black", lw=2, label=label, zorder=4)
+    ax.plot(kde_x_data, kde_y_data, color="black", lw=2, label=_label, zorder=4)
 
     # rug plot
     # use data coordinates in horizontal and axis coordinates in vertical direction

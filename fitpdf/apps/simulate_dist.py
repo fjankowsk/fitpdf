@@ -127,6 +127,7 @@ def main():
     params = {
         "dpi": 300,
         "nbin": "auto",
+        "label": "on",
         "nsamp": args.nsamp,
         "output": args.output,
         "title": None,
