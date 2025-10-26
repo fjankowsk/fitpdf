@@ -176,7 +176,7 @@ def main():
     _df.to_csv("simulated_fluences.csv", index=False)
 
     params["outfile"] = "simulated_pdf.pdf"
-    plot_pedist(foff_samples, fon_samples, params)
+    plot_pedist(fon_samples, foff_samples, params)
 
     plt.show()
 

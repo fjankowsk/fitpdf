@@ -163,16 +163,16 @@ def plot_adaptive_bandwidths(t_data, t_bandwidths, params):
         plt.close(fig)
 
 
-def plot_pedist(foff, fon, params):
+def plot_pedist(fon, foff, params):
     """
     Plot the pulse-energy distribution data samples.
 
     Parameters
     ----------
-    foff: ~np.array of float
-        The off-pulse fluence samples.
     fon: ~np.array of float
         The on-pulse fluence samples.
+    foff: ~np.array of float
+        The off-pulse fluence samples.
     params: dict
         Other parameters that influence the processing.
     """

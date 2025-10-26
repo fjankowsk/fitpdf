@@ -28,7 +28,13 @@ from fitpdf.general_helpers import (
     signal_handler,
 )
 import fitpdf.models as fmodels
-from fitpdf.plotting import plot_chains, plot_corner, plot_fit, plot_prior_predictive
+from fitpdf.plotting import (
+    plot_chains,
+    plot_corner,
+    plot_fit,
+    plot_pedist,
+    plot_prior_predictive,
+)
 
 
 def parse_args():
@@ -411,6 +417,9 @@ def main():
         _global_mean = params["mean"]
 
     print(f"Global mean on-pulse fluence: {_global_mean:.3f}")
+
+    params["outfile"] = "pedist_pdf.pdf"
+    plot_pedist(_fon / _global_mean, _foff / _global_mean, params)
 
     fit_pe_dist(_fon / _global_mean, _foff / _global_mean, params)
 
