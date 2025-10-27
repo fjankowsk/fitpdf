@@ -343,8 +343,12 @@ def fit_pedist(t_data, t_offp, params):
         mode = {"value": quantiles[1], "error": error}
 
         print(
-            "Component {0}: {1:.3f} +- {2:.3f}, {3:.3f} +- {4:.3f}".format(
-                icomp, weight["value"], weight["error"], mode["value"], mode["error"]
+            "Component {0}: {1:.3f} +- {2:.3f} %, {3:.3f} +- {4:.3f}".format(
+                icomp,
+                100.0 * weight["value"],
+                100.0 * weight["error"],
+                mode["value"],
+                mode["error"],
             )
         )
 
