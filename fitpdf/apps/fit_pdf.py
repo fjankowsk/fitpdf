@@ -409,6 +409,13 @@ def main():
 
     _fon, _foff = get_clean_data(df)
 
+    for item, _label in zip([_fon, _foff], ["On", "Off"]):
+        print(
+            "{0}-pulse mean, median, std, number of samples: {1:.5f}, {2:.5f}, {3:.5f}, {4}".format(
+                _label, np.mean(item), np.median(item), np.std(item), len(item)
+            )
+        )
+
     # standardise the data by dividing by the mean on-pulse fluence
     # we should also divide by the on-pulse standard deviation for a
     # proper data standardisation (unity mean and unity standard deviation)
@@ -420,7 +427,7 @@ def main():
     else:
         _global_mean = params["mean"]
 
-    print(f"Global mean on-pulse fluence: {_global_mean:.3f}")
+    print(f"Global mean on-pulse fluence: {_global_mean}")
 
     params["outfile"] = "pedist_pdf.pdf"
     plot_pedist(_fon / _global_mean, _foff / _global_mean, params)
