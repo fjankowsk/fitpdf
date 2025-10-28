@@ -86,6 +86,16 @@ def parse_args():
         help="Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw (Pareto) component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
     )
 
+    fitp.add_argument(
+        "--weights",
+        dest="weights",
+        type=float,
+        metavar=("value"),
+        nargs="+",
+        default=None,
+        help="Override the default component distribution weights in the model prior. This is sometimes useful to ensure convergence of the fit. The weights are given as simple floating point numbers (not percentages) and must sum to unity. For instance, [0.2, 0.3, 0.5] assigns an average prior weight of 20, 30, and 50 per cent to each of the component distributions, respectively. The number of weights specified must match the number of model components, e.g. three for the NNL model.",
+    )
+
     # options that affect the output formatting
     output = parser.add_argument_group(title="Output formatting")
 
@@ -148,6 +158,19 @@ def check_args(args):
             pass
         else:
             log.error(f"The mean fluence is invalid: {args.mean}")
+            sys.exit(1)
+
+    # nbin
+    if not args.nbin > 1:
+        log.error(f"The number of bins is invalid: {args.nbin}")
+        sys.exit(1)
+
+    # weights
+    if args.weights is not None:
+        if len(args.weights) == len(args.model) and sum(args.weights) == 1.0:
+            pass
+        else:
+            log.error(f"The provided weights are invalid: {args.weights}")
             sys.exit(1)
 
     # check that file exist
@@ -363,6 +386,7 @@ def main():
         "output": args.output,
         "publish": False,
         "title": args.title,
+        "weights": args.weights,
     }
 
     print(f"Processing: {args.filename}")

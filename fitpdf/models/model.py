@@ -38,7 +38,7 @@ class Model(object):
 
         return info_str
 
-    def get_model(self, t_data, t_offp):
+    def get_model(self, t_data, t_offp, params):
         """
         Construct a mixture model.
 
@@ -48,6 +48,8 @@ class Model(object):
             The input data to be fit.
         t_offp: ~np.array of float
             The off-pulse data.
+        params: dict
+            Additional parameters that influence the processing.
 
         Returns
         -------

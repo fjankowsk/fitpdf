@@ -43,7 +43,7 @@ class NN(Model):
 
         return info_str
 
-    def get_model(self, t_data, t_offp):
+    def get_model(self, t_data, t_offp, params):
         """
         Construct a mixture model.
 
@@ -53,6 +53,8 @@ class NN(Model):
             The input data to be fit.
         t_offp: ~np.array of float
             The off-pulse data.
+        params: dict
+            Additional parameters that influence the processing.
 
         Returns
         -------
@@ -76,7 +78,12 @@ class NN(Model):
         print(f"Off-pulse std: {offp_std:.5f}")
 
         # mixture contributions
-        _weights = np.array([0.3, 0.7])
+        if params["weights"] is None:
+            _weights = np.array([0.3, 0.7])
+        else:
+            _weights = np.array(params["weights"])
+            self.__log.info(f"Using custom component weights: {_weights}")
+
         _weights /= np.sum(_weights)
         self.__log.info(f"Mixture weights: {_weights}")
 
