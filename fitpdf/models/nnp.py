@@ -97,7 +97,7 @@ class NNP(Model):
             )
             sigma = pm.HalfNormal(
                 "sigma",
-                sigma=np.array([offp_std, 0.5 * offp_std, 0.5]),
+                sigma=np.array([offp_std, onp_std, 0.5]),
                 dims="component",
             )
 

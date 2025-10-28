@@ -142,7 +142,7 @@ def main():
     weights = [0.2, 0.3, 0.5]
     weights /= np.sum(weights)
     mu = [0.0, 0.5, 0.0]
-    sigma = [2.0, 1.0, 0.5]
+    sigma = [1.0, 2.0, 0.5]
 
     print(f"Mixture weights: {weights}")
 
