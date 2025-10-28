@@ -59,23 +59,6 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--fast",
-        dest="fast",
-        action="store_true",
-        default=False,
-        help="Enable fast processing. This reduces the number of MCMC steps drastically.",
-    )
-
-    parser.add_argument(
-        "--label",
-        dest="label",
-        type=str,
-        metavar=("name"),
-        default=None,
-        help="The label to use for the input file.",
-    )
-
-    parser.add_argument(
         "--mean",
         dest="mean",
         type=float,
@@ -84,7 +67,18 @@ def parse_args():
         help="The global mean fluence by which to divide the histograms. The default behaviour is to determine it automatically from the on-pulse fluence data.",
     )
 
-    parser.add_argument(
+    # fit parameter options
+    fitp = parser.add_argument_group(title="Fit parameters")
+
+    fitp.add_argument(
+        "--fast",
+        dest="fast",
+        action="store_true",
+        default=False,
+        help="Enable fast processing. This reduces the number of MCMC samples drastically and is recommended against for publication-quality fits.",
+    )
+
+    fitp.add_argument(
         "--model",
         dest="model",
         choices=["NL", "NN", "NNL", "NNP"],
@@ -94,6 +88,15 @@ def parse_args():
 
     # options that affect the output formatting
     output = parser.add_argument_group(title="Output formatting")
+
+    output.add_argument(
+        "--label",
+        dest="label",
+        type=str,
+        metavar=("name"),
+        default=None,
+        help="The label to use for the input file.",
+    )
 
     output.add_argument(
         "--nbin",
@@ -113,7 +116,7 @@ def parse_args():
         help="Output plots to file rather than to screen.",
     )
 
-    parser.add_argument(
+    output.add_argument(
         "--title",
         dest="title",
         type=str,
