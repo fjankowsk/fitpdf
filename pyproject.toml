@@ -27,7 +27,7 @@ authors = [
 maintainers = [
   { name="Fabian Jankowski", email="fjankowsk@gmail.com" }
 ]
-description = "Distribution fitting tools."
+description = "Bayesian distribution fitting for pulsar and FRB data."
 readme = "README.md"
 requires-python = ">=3.9"
 keywords = ["distributions", "fitting", "fitting-distributions", "data-analysis", "astrophysics", "pulsars", "fast-radio-bursts", "python"]

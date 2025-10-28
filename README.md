@@ -1,4 +1,4 @@
-# FitPDF: Distribution fitting tools #
+# FitPDF: Bayesian distribution fitting for pulsar and FRB data #
 
 [![PyPI latest release](https://img.shields.io/pypi/v/fitpdf.svg)](https://pypi.org/project/fitpdf/)
 [![GitHub issues](https://img.shields.io/badge/issue_tracking-GitHub-blue.svg)](https://github.com/fjankowsk/fitpdf/issues/)
