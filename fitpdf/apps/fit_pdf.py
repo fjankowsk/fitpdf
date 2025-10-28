@@ -85,40 +85,15 @@ def parse_args():
     )
 
     parser.add_argument(
-        "--meanthresh",
-        dest="mean_thresh",
-        type=float,
-        metavar=("value"),
-        default=-3.0,
-        help="Ignore fluence data below this mean fluence threshold, i.e. select only data where fluence / mean > meanthresh.",
-    )
-
-    parser.add_argument(
         "--model",
         dest="model",
         choices=["NL", "NN", "NNL", "NNP"],
         default="NNL",
-        help="Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
+        help="Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw (Pareto) component. For instance, the default NNL model consists of two Normal and one Lognormal distributions.",
     )
 
     # options that affect the output formatting
     output = parser.add_argument_group(title="Output formatting")
-
-    output.add_argument(
-        "--ccdf",
-        dest="ccdf",
-        action="store_true",
-        default=False,
-        help="Show the CCDF (cumulative counts) instead of the PDF (differential counts).",
-    )
-
-    output.add_argument(
-        "--log",
-        dest="log",
-        action="store_true",
-        default=False,
-        help="Show histograms in double logarithmic scale.",
-    )
 
     output.add_argument(
         "--nbin",
@@ -376,13 +351,10 @@ def main():
     customise_matplotlib_format()
 
     params = {
-        "ccdf": args.ccdf,
         "dpi": 300,
         "fast": args.fast,
         "label": args.label,
-        "log": args.log,
         "mean": args.mean,
-        "mean_thresh": args.mean_thresh,
         "model": args.model,
         "nbin": args.nbin,
         "output": args.output,
