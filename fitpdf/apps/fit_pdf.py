@@ -170,7 +170,7 @@ def check_args(args):
         if len(args.weights) == len(args.model) and sum(args.weights) == 1.0:
             pass
         else:
-            log.error(f"The provided weights are invalid: {args.weights}")
+            log.error(f"The weights are invalid: {args.weights}")
             sys.exit(1)
 
     # check that file exist
@@ -263,7 +263,7 @@ def fit_pedist(t_data, t_offp, params):
     else:
         raise NotImplementedError("Model not implemented: %s", params["model"])
 
-    model = mobj.get_model(data, offp)
+    model = mobj.get_model(data, offp, params)
 
     print(f"All RVs: {model.basic_RVs}")
     print(f"Free RVs: {model.free_RVs}")
