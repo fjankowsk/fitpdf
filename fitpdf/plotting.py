@@ -3,6 +3,8 @@
 #   Plotting related helper functions.
 #
 
+import logging
+
 import arviz as az
 import corner
 from KDEpy import FFTKDE, TreeKDE
@@ -234,6 +236,8 @@ def plot_fit(mobj, model, idata, offp, params):
         Additional parameters that influence the processing.
     """
 
+    log = logging.getLogger("fitpdf.plotting")
+
     obs_data = np.sort(idata.observed_data["obs"].values)
 
     fig = plt.figure()
@@ -242,13 +246,13 @@ def plot_fit(mobj, model, idata, offp, params):
     # plot the observed data
     # kernel density estimate using adaptive bandwidth
     isj_bw_data = improved_sheather_jones(obs_data.reshape(obs_data.shape[0], -1))
-    print(f"ISJ kernel bandwidth data: {isj_bw_data:.5f}")
+    log.info(f"ISJ kernel bandwidth data: {isj_bw_data:.5f}")
 
     min_bw_data = 5.0 * isj_bw_data
-    print(f"Minimum bandwidth data: {min_bw_data:.5f}")
+    log.info(f"Minimum bandwidth data: {min_bw_data:.5f}")
 
     bandwidths = get_adaptive_bandwidth(obs_data, min_bw=min_bw_data)
-    print(f"Bandwidths: {bandwidths}")
+    log.info(f"Bandwidths: {bandwidths}")
     plot_adaptive_bandwidths(obs_data, bandwidths, params)
 
     kde_x_data, kde_y_data = (
@@ -307,7 +311,7 @@ def plot_fit(mobj, model, idata, offp, params):
 
     # perform a two-sample kolmogorov-smirnov test
     ks_test = stats.ks_2samp(obs_data, samples, axis=None)
-    print("Two-sample KS test data vs model:")
+    print("\nTwo-sample KS test data vs model:")
     print(f"Statistic: {ks_test.statistic:.3f}")
     print(f"p-value: {ks_test.pvalue:.3f}")
     print(f"Location: {ks_test.statistic_location:.3f}")
@@ -325,11 +329,16 @@ def plot_fit(mobj, model, idata, offp, params):
 
     for ichain, idraw in zip(idxs_chain, idxs_draw):
         samples = (
-            idata.posterior_predictive["obs"].isel(chain=ichain, draw=idraw).values
+            idata.posterior_predictive["obs"]
+            .isel(chain=ichain, draw=idraw)
+            .values.reshape(-1)
         )
-        _bandwidths = get_adaptive_bandwidth(samples, min_bw=min_bw_data)
+        _mask = (samples >= kde_x_data.min()) & (samples <= kde_x_data.max())
+        _bandwidths = get_adaptive_bandwidth(samples[_mask], min_bw=min_bw_data)
         kde_y = (
-            TreeKDE(kernel="gaussian", bw=_bandwidths).fit(samples).evaluate(kde_x_data)
+            TreeKDE(kernel="gaussian", bw=_bandwidths)
+            .fit(samples[_mask])
+            .evaluate(kde_x_data)
         )
 
         ax.plot(
