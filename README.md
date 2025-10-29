@@ -4,7 +4,11 @@
 [![GitHub issues](https://img.shields.io/badge/issue_tracking-GitHub-blue.svg)](https://github.com/fjankowsk/fitpdf/issues/)
 [![License - MIT](https://img.shields.io/pypi/l/fitpdf.svg)](https://github.com/fjankowsk/fitpdf/blob/master/LICENSE)
 
-This repository contains software to fit complex distribution models to observational data. This is useful for modelling pulse-energy distributions of radio pulsars or repeating fast radio bursts (FRBs). However, the software can fit any distribution data.
+`FitPDF` fits complex mixture models of various distributions to observational data. This is useful, for instance, for characterising the observed pulse energy distributions of radio pulsars and repeating fast radio bursts (FRBs). However, `FitPDF` is data-agnostic and can, in principle, fit any distribution data and determine its underlying probability density function (PDF).
+
+The `FitPDF` software suite includes tools for simulating distribution data, fitting complex mixture distributions to data, and comparing the resulting fits in an information-theoretical sense. `FitPDF` support several model distributions, which are homogeneous or heterogeneous mixtures of individual component distributions (e.g. normal, lognormal, power law). `FitPDF` operates in a Bayesian and unbinned manner, thereby maximising the information extracted from the data and robustly determining the model parameters and their uncertainties.
+
+The current implementation is based on [PyMC](https://www.pymc.io).
 
 ## Author ##
 
@@ -20,7 +24,7 @@ If you make use of the software, please add a link to this repository and cite o
 
 ## Installation ##
 
-The easiest and recommended way to install the software is via the Python command `pip` directly from the `fitpdf` GitHub software repository. For instance, to install the master branch of the code, use the following command:  
+The easiest and recommended way to install the software is via the Python command `pip` directly from the `FitPDF` GitHub software repository. For instance, to install the master branch of the code, use the following command:  
 `pip install git+https://github.com/fjankowsk/fitpdf.git@master`
 
 This will automatically install all dependencies. Depending on your Python installation, you might want to replace `pip` with `pip3` in the above command.
@@ -93,7 +97,7 @@ Output formatting:
 
 ## Input file format ##
 
-`fitpdf` reads the input distribution data from simple plain text files in comma-separated values (CSV) format. The files must contain at least the following data fields or columns:
+`FitPDF` reads the input distribution data from simple plain text files in comma-separated values (CSV) format. The files must contain at least the following data fields or columns:
 
 * "rotation": integer
 
