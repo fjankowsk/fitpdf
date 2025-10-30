@@ -1,6 +1,7 @@
 # FitPDF: Bayesian distribution fitting for pulsar and FRB data #
 
 [![PyPI latest release](https://img.shields.io/pypi/v/fitpdf.svg)](https://pypi.org/project/fitpdf/)
+[![ascl:2510.005](https://img.shields.io/badge/ascl-2510.005-blue.svg?colorB=262255)](https://ascl.net/2510.005)
 [![GitHub issues](https://img.shields.io/badge/issue_tracking-GitHub-blue.svg)](https://github.com/fjankowsk/fitpdf/issues/)
 [![License - MIT](https://img.shields.io/pypi/l/fitpdf.svg)](https://github.com/fjankowsk/fitpdf/blob/master/LICENSE)
 
