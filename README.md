@@ -143,3 +143,7 @@ The images below show some example output from the program obtained when fitting
 ![Simulated distribution data](https://raw.githubusercontent.com/fjankowsk/fitpdf/refs/heads/main/docs/simulated_data.png "Simulated distribution data")
 
 ![Example fit of the simulated test data](https://raw.githubusercontent.com/fjankowsk/fitpdf/refs/heads/main/docs/fit_example.png "Example fit of the simulated test data")
+
+![Chain plot of the example fit](https://raw.githubusercontent.com/fjankowsk/fitpdf/refs/heads/main/docs/chains.png "Chain plot of the example fit")
+
+![Corner plot of the example fit](https://raw.githubusercontent.com/fjankowsk/fitpdf/refs/heads/main/docs/corner.png "Corner plot of the example fit")
