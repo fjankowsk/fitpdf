@@ -127,6 +127,14 @@ def parse_args():
     )
 
     output.add_argument(
+        "--publish",
+        dest="publish",
+        action="store_true",
+        default=False,
+        help="Produce plots suitable for publication.",
+    )
+
+    output.add_argument(
         "--title",
         dest="title",
         type=str,
@@ -384,7 +392,7 @@ def main():
         "model": args.model,
         "nbin": args.nbin,
         "output": args.output,
-        "publish": False,
+        "publish": args.publish,
         "title": args.title,
         "weights": args.weights,
     }
