@@ -52,7 +52,7 @@ Output formatting:
 
 ```console
 $ fitpdf-fit -h
-usage: fitpdf-fit [-h] [--mean value] [--fast] [--model {NL,NN,NNL,NNP}] [--weights value [value ...]] [--label name] [--nbin value] [-o] [--title text] filename
+usage: fitpdf-fit [-h] [--mean value] [--fast] [--model {NL,NN,NNL,NNP}] [--weights value [value ...]] [--label name] [--nbin value] [-o] [--publish] [--title text] filename
 
 Fit distribution data.
 
@@ -66,17 +66,17 @@ options:
 Fit parameters:
   --fast                Enable fast processing. This reduces the number of MCMC samples drastically and is recommended against for publication-quality fits. (default: False)
   --model {NL,NN,NNL,NNP}
-                        Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw (Pareto) component. For instance, the default NNL model consists of
-                        two Normal and one Lognormal distributions. (default: NNL)
+                        Use the specified distribution model, where N denotes a Normal, L a Lognormal, and P a powerlaw (Pareto) component. For instance, the default NNL model consists of two Normal and one Lognormal distributions. (default: NNL)
   --weights value [value ...]
-                        Override the default component distribution weights in the model prior. This is sometimes useful to ensure convergence of the fit. The weights are given as simple
-                        floating point numbers (not percentages) and must sum to unity. For instance, [0.2, 0.3, 0.5] assigns an average prior weight of 20, 30, and 50 per cent to each of
-                        the component distributions, respectively. The number of weights specified must match the number of model components, e.g. three for the NNL model. (default: None)
+                        Override the default component distribution weights in the model prior. This is sometimes useful to ensure convergence of the fit. The weights are given as simple floating point numbers (not percentages) and must sum to unity. For instance,
+                        [0.2, 0.3, 0.5] assigns an average prior weight of 20, 30, and 50 per cent to each of the component distributions, respectively. The number of weights specified must match the number of model components, e.g. three for the NNL model. (default:
+                        None)
 
 Output formatting:
   --label name          The label to use for the input file. (default: None)
   --nbin value          The number of histogram bins to use. (default: 50)
   -o, --output          Output plots to file rather than to screen. (default: False)
+  --publish             Produce plots suitable for publication. (default: False)
   --title text          Set a custom figure title. (default: None)
 ```
 
